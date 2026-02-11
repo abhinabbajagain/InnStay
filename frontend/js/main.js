@@ -21,8 +21,6 @@ const InnStay = {
     setupEventListeners() {
         const searchForm = document.getElementById('searchForm');
         const expandSearchBtn = document.getElementById('expandSearchBtn');
-        const closeExpandedSearch = document.getElementById('closeExpandedSearch');
-        const expandedSearchForm = document.getElementById('expandedSearchForm');
         const menuBtn = document.getElementById('menuBtn');
         const menuDropdown = document.getElementById('menuDropdown');
 
@@ -31,44 +29,11 @@ const InnStay = {
             searchForm.addEventListener('submit', (e) => this.handleSearch(e));
         }
 
-        // Expand search button
+        // Expand search button - scroll to search
         if (expandSearchBtn) {
             expandSearchBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('expandedSearchContainer').style.display = 'block';
-            });
-        }
-
-        // Close expanded search
-        if (closeExpandedSearch) {
-            closeExpandedSearch.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('expandedSearchContainer').style.display = 'none';
-            });
-        }
-
-        // Expanded search form submit
-        if (expandedSearchForm) {
-            expandedSearchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const destination = document.getElementById('destination-expanded').value;
-                const checkin = document.getElementById('checkin-expanded').value;
-                const checkout = document.getElementById('checkout-expanded').value;
-                const guests = document.getElementById('guests-expanded').value;
-
-                if (!destination || !checkin || !checkout || !guests) {
-                    this.showAlert('Please fill in all search fields', 'warning');
-                    return;
-                }
-
-                sessionStorage.setItem('search', JSON.stringify({
-                    destination,
-                    checkin,
-                    checkout,
-                    guests
-                }));
-                
-                window.location.href = 'pages/search.html';
+                document.querySelector('.search-hero').scrollIntoView({ behavior: 'smooth' });
             });
         }
 
@@ -86,28 +51,21 @@ const InnStay = {
             });
         }
 
-        // Compact search button
+        // Compact search button - scroll to main search
         const compactSearchBtn = document.getElementById('compactSearchBtn');
         if (compactSearchBtn) {
             compactSearchBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('expandedSearchContainer').style.display = 'block';
-                // Scroll to expanded search
-                setTimeout(() => {
-                    document.getElementById('expandedSearchContainer').scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                document.querySelector('.search-hero').scrollIntoView({ behavior: 'smooth' });
             });
         }
 
-        // Compact search input focus
+        // Compact search input - scroll to main search
         const compactSearch = document.getElementById('compactSearch');
         if (compactSearch) {
             compactSearch.addEventListener('focus', (e) => {
                 e.preventDefault();
-                document.getElementById('expandedSearchContainer').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('expandedSearchContainer').scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                document.querySelector('.search-hero').scrollIntoView({ behavior: 'smooth' });
             });
         }
     },
