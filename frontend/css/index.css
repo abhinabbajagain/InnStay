@@ -1,113 +1,307 @@
 /* ============================================
-   InnStay - Homepage CSS
+   InnStay - Homepage CSS (Airbnb Design)
    Description: Styles specific to homepage
    ============================================ */
 
 /* ============================================
-   Hero Section
+   Search Hero Section
    ============================================ */
 
-.hero-section {
+.search-hero {
     background: linear-gradient(135deg, #FF5A5F 0%, #ff3d47 100%);
-    color: white;
-    padding: 100px 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    animation: fadeInDown 0.8s ease;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    z-index: -1;
-}
-
-.hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.hero-subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    opacity: 0.95;
-}
-
-/* ============================================
-   Search Section
-   ============================================ */
-
-.search-section {
-    background-color: #ffffff;
     padding: 40px 20px;
-    box-shadow: var(--shadow-sm);
+    margin-bottom: 60px;
 }
 
-.search-container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: var(--shadow-md);
-    max-width: 900px;
+.search-box-container {
+    max-width: 1000px;
     margin: 0 auto;
-    border: 1px solid #e0e0e0;
-}
-
-.search-container h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-weight: 700;
-    color: var(--dark-color);
-    font-size: 1.8rem;
 }
 
 .search-form {
-    margin-top: 20px;
+    width: 100%;
 }
 
-.search-form .form-label {
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--dark-color);
-    font-size: 0.95rem;
-}
-
-.search-form .form-control,
-.search-form .form-select {
-    border: 1px solid #dee2e6;
+.search-box {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 12px;
+    background: white;
+    padding: 16px;
     border-radius: var(--border-radius);
-    padding: 10px 12px;
-    font-size: 0.95rem;
+    box-shadow: var(--shadow-lg);
+    align-items: flex-end;
 }
 
-.search-form .form-control:focus,
-.search-form .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+.search-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-field label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    color: var(--dark-color);
+}
+
+.search-field input {
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--dark-color);
+}
+
+.search-field input::placeholder {
+    color: var(--text-light);
+}
+
+.search-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-btn:hover {
+    background-color: #ff3d47;
+    transform: scale(1.05);
+}
+
+/* Mobile responsive search box */
+@media (max-width: 992px) {
+    .search-box {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .search-btn {
+        width: 100%;
+        border-radius: var(--border-radius-sm);
+    }
 }
 
 /* ============================================
-   Features Section
+   Properties Section
+   ============================================ */
+
+.properties-section {
+    padding: 60px 0;
+    background: white;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin: 0;
+}
+
+.section-link {
+    font-size: 1.5rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.section-link:hover {
+    background: var(--light-color);
+    color: var(--primary-color);
+}
+
+.properties-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.properties-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.properties-scroll::-webkit-scrollbar-track {
+    background: var(--light-color);
+}
+
+.properties-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.properties-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+.properties-container {
+    display: flex;
+    gap: 20px;
+    width: fit-content;
+}
+
+/* ============================================
+   Property Card
+   ============================================ */
+
+.property-card {
+    width: 280px;
+    flex-shrink: 0;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+}
+
+.property-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: var(--light-color);
+}
+
+.property-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.property-card:hover .property-image {
+    transform: scale(1.05);
+}
+
+.property-badge-top-left {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    z-index: 2;
+}
+
+.property-badge-top-right {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.property-badge-top-right:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+}
+
+.property-badge-top-right i {
+    font-size: 1.2rem;
+    color: var(--dark-color);
+}
+
+.property-badge-top-right i.favorited {
+    color: var(--primary-color);
+}
+
+.property-content {
+    padding: 0 4px;
+}
+
+.property-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.property-location {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.property-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.property-rating .stars {
+    color: #FF6E1A;
+    letter-spacing: 1px;
+}
+
+.property-rating .count {
+    color: var(--text-light);
+}
+
+.property-price {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.property-price .amount {
+    font-weight: 700;
+}
+
+.property-price .duration {
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* ============================================
+   Features Section (Optional)
    ============================================ */
 
 .features-section {
     padding: 60px 20px;
-    background: white;
+    background: #ffffff;
 }
 
 .features-section h2 {
@@ -120,8 +314,8 @@
 
 .feature-card {
     background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     padding: 30px;
     text-align: center;
     transition: var(--transition);
@@ -138,7 +332,7 @@
     width: 60px;
     height: 60px;
     margin: 0 auto 20px;
-    background: #FF5A5F;
+    background: var(--primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -151,113 +345,13 @@
     font-weight: 700;
     margin-bottom: 15px;
     color: var(--dark-color);
-    font-size: 1.3rem;
+    font-size: 1.1rem;
 }
 
 .feature-card p {
-    color: var(--secondary-color);
+    color: var(--text-light);
     font-size: 0.95rem;
     line-height: 1.6;
-}
-
-/* ============================================
-   Popular Hotels Section
-   ============================================ */
-
-.popular-hotels {
-    padding: 60px 20px;
-    background-color: #ffffff;
-}
-
-.popular-hotels h2 {
-    text-align: center;
-    margin-bottom: 50px;
-    font-weight: 700;
-    font-size: 2.5rem;
-    color: var(--dark-color);
-}
-
-.hotel-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: var(--transition);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: white;
-}
-
-.hotel-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
-    border-color: #d0d0d0;
-}
-
-.hotel-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    background: linear-gradient(135deg, #f5f5f5, #eeeeee);
-}
-
-.hotel-content {
-    padding: 20px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.hotel-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--dark-color);
-}
-
-.hotel-location {
-    color: var(--text-light);
-    font-size: 0.85rem;
-    margin-bottom: 10px;
-}
-
-.hotel-rating {
-    color: #FF6E1A;
-    font-size: 0.85rem;
-    margin-bottom: 10px;
-}
-
-.hotel-rating .star {
-    color: #FF6E1A;
-}
-
-.hotel-price {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--dark-color);
-    margin-bottom: 15px;
-    margin-top: auto;
-}
-
-.hotel-price span {
-    color: var(--text-light);
-    font-weight: 500;
-}
-
-/* ============================================
-   Grid Layout
-   ============================================ */
-
-.row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin: 0;
-}
-
-.col-md-3,
-.col-md-4 {
-    width: 100%;
 }
 
 /* ============================================
@@ -265,54 +359,46 @@
    ============================================ */
 
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
+    .section-title {
+        font-size: 1.5rem;
     }
 
-    .hero-subtitle {
-        font-size: 1rem;
+    .property-card {
+        width: 240px;
     }
 
-    .search-section {
-        padding: 30px 15px;
+    .property-image-wrapper {
+        height: 220px;
     }
 
-    .search-container {
-        padding: 20px;
-    }
-
-    .features-section h2,
-    .popular-hotels h2 {
-        font-size: 1.8rem;
-    }
-
-    .hotel-image {
-        height: 150px;
-    }
-
-    .search-form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .row {
+    .search-box {
         grid-template-columns: 1fr;
     }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-    .hero-title {
-        font-size: 2.5rem;
+@media (max-width: 576px) {
+    .properties-section {
+        padding: 40px 0;
     }
 
-    .row {
-        grid-template-columns: repeat(2, 1fr);
+    .section-title {
+        font-size: 1.3rem;
     }
-}
 
-@media (min-width: 1025px) {
-    .row {
-        grid-template-columns: repeat(3, 1fr);
+    .property-card {
+        width: 200px;
+    }
+
+    .property-image-wrapper {
+        height: 180px;
+    }
+
+    .property-name {
+        font-size: 0.9rem;
+    }
+
+    .search-hero {
+        padding: 30px 15px;
+        margin-bottom: 40px;
     }
 }
