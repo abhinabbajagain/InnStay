@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Information -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InnStay - Search Hotels">
+    
+    <title>Search Hotels - InnStay</title>
+    
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        /* Search page specific styles */
+        .search-page {
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .filters-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+
+        .filter-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .filter-item {
+            margin-bottom: 12px;
+        }
+
+        .filter-item input[type="checkbox"],
+        .filter-item input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .filter-item label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .search-results {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .results-count {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        .sort-dropdown {
+            min-width: 200px;
+        }
+
+        .hotel-result {
+            display: flex;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .hotel-result:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .hotel-result-image {
+            width: 250px;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f5f5, #eeeeee);
+        }
+
+        .hotel-result-content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hotel-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .hotel-result-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .hotel-result-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .hotel-result-location {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .hotel-result-rating {
+            margin-bottom: 10px;
+        }
+
+        .hotel-result-amenities {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .amenity-badge {
+            background-color: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+
+        .hotel-result-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .hotel-result {
+                flex-direction: column;
+            }
+
+            .hotel-result-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .sort-dropdown {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="../index.html">
+                <i class="fas fa-hotel"></i> InnStay
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="search.html">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Page -->
+    <div class="search-page">
+        <div class="container py-5">
+            <div class="row gap-4">
+                <!-- Filters Sidebar -->
+                <div class="col-lg-3">
+                    <div class="filters-sidebar">
+                        <h5 class="filter-title"><i class="fas fa-sliders-h"></i> Filters</h5>
+
+                        <!-- Price Range Filter -->
+                        <div class="filter-section">
+                            <div class="filter-title">Price Range</div>
+                            <input type="range" class="form-range" id="priceRange" 
+                                   min="0" max="500" value="500">
+                            <small class="text-muted">
+                                $0 - $<span id="priceValue">500</span>
+                            </small>
+                        </div>
+
+                        <!-- Star Rating -->
+                        <div class="filter-section">
+                            <div class="filter-title">Star Rating</div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="star5" value="5">
+                                <label for="star5">5 Star</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="star4" value="4">
+                                <label for="star4">4+ Star</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="star3" value="3">
+                                <label for="star3">3+ Star</label>
+                            </div>
+                        </div>
+
+                        <!-- Amenities -->
+                        <div class="filter-section">
+                            <div class="filter-title">Amenities</div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="wifi" value="wifi">
+                                <label for="wifi"><i class="fas fa-wifi"></i> WiFi</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="pool" value="pool">
+                                <label for="pool"><i class="fas fa-swimming-pool"></i> Pool</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="gym" value="gym">
+                                <label for="gym"><i class="fas fa-dumbbell"></i> Gym</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="parking" value="parking">
+                                <label for="parking"><i class="fas fa-square-parking"></i> Parking</label>
+                            </div>
+                        </div>
+
+                        <!-- Apply Filters Button -->
+                        <button class="btn btn-primary w-100" onclick="applyFilters()">
+                            <i class="fas fa-check"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div class="col-lg-9">
+                    <div class="search-results">
+                        <!-- Results Header -->
+                        <div class="results-header">
+                            <div>
+                                <h5 class="mb-2">Available Hotels</h5>
+                                <p class="results-count">Showing 12 hotels</p>
+                            </div>
+                            <select class="form-select sort-dropdown">
+                                <option value="">Sort By...</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="newest">Newest</option>
+                            </select>
+                        </div>
+
+                        <!-- Hotel Results -->
+                        <div id="hotelResults">
+                            <!-- Results will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <h5>About InnStay</h5>
+                    <p>Your trusted platform for hotel bookings.</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html" class="text-decoration-none">Home</a></li>
+                        <li><a href="search.html" class="text-decoration-none">Search</a></li>
+                        <li><a href="login.html" class="text-decoration-none">Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Contact</h5>
+                    <p>info@innstay.com<br>+1 (555) 123-4567</p>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="text-center">
+                <p>&copy; 2026 InnStay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Utility Functions -->
+    <script src="../js/utils.js"></script>
+    <!-- Main JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        /**
+         * Load hotel search results
+         * Mock data - replace with actual API call in backend
+         */
+        function loadSearchResults() {
+            const hotels = [
+                {
+                    id: 1,
+                    name: 'Grand Hotel New York',
+                    location: 'Manhattan, New York',
+                    rating: 4.8,
+                    reviews: 245,
+                    price: 250,
+                    image: 'https://via.placeholder.com/250x200?text=Grand+Hotel',
+                    amenities: ['WiFi', 'Pool', 'Gym']
+                },
+                {
+                    id: 2,
+                    name: 'Ocean View Resort',
+                    location: 'Miami Beach, Florida',
+                    rating: 4.6,
+                    reviews: 189,
+                    price: 180,
+                    image: 'https://via.placeholder.com/250x200?text=Ocean+View',
+                    amenities: ['WiFi', 'Pool', 'Parking']
+                },
+                {
+                    id: 3,
+                    name: 'Mountain Lodge',
+                    location: 'Denver, Colorado',
+                    rating: 4.5,
+                    reviews: 156,
+                    price: 120,
+                    image: 'https://via.placeholder.com/250x200?text=Mountain+Lodge',
+                    amenities: ['WiFi', 'Gym']
+                }
+            ];
+
+            const resultsContainer = document.getElementById('hotelResults');
+            const html = hotels.map(hotel => `
+                <div class="hotel-result">
+                    <img src="${hotel.image}" alt="${hotel.name}" class="hotel-result-image">
+                    <div class="hotel-result-content">
+                        <div class="hotel-result-header">
+                            <div>
+                                <div class="hotel-result-name">${hotel.name}</div>
+                                <p class="hotel-result-location">
+                                    <i class="fas fa-map-marker-alt"></i> ${hotel.location}
+                                </p>
+                            </div>
+                            <div class="text-end">
+                                <div class="hotel-result-price">$${hotel.price}</div>
+                                <small class="text-muted">per night</small>
+                            </div>
+                        </div>
+                        
+                        <div class="hotel-result-rating">
+                            ${InnStay.createStarRating(hotel.rating)}
+                            <span class="ms-2">${hotel.rating} (${hotel.reviews} reviews)</span>
+                        </div>
+
+                        <div class="hotel-result-amenities">
+                            ${hotel.amenities.map(a => `<span class="amenity-badge">${a}</span>`).join('')}
+                        </div>
+
+                        <div class="hotel-result-footer">
+                            <button class="btn btn-primary" onclick="InnStay.viewHotelDetails(${hotel.id})">
+                                View Details
+                            </button>
+                            <button class="btn btn-outline-primary">
+                                <i class="fas fa-heart"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            resultsContainer.innerHTML = html || '<div class="no-results"><i class="fas fa-search"></i><p>No hotels found</p></div>';
+        }
+
+        /**
+         * Apply selected filters
+         */
+        function applyFilters() {
+            // Get filter values
+            const priceRange = document.getElementById('priceRange').value;
+            const selectedStars = Array.from(document.querySelectorAll('input[id^="star"]:checked')).map(cb => cb.value);
+            const amenities = Array.from(document.querySelectorAll('.filter-section:last-child input:checked')).map(cb => cb.value);
+
+            console.log('Applying filters:', { priceRange, selectedStars, amenities });
+            InnStay.showAlert('Filters applied successfully', 'success', 2000);
+            loadSearchResults();
+        }
+
+        /**
+         * Update price display when range changes
+         */
+        document.getElementById('priceRange').addEventListener('input', function() {
+            document.getElementById('priceValue').textContent = this.value;
+        });
+
+        // Load results when page loads
+        document.addEventListener('DOMContentLoaded', loadSearchResults);
+    </script>
+</body>
+</html>
