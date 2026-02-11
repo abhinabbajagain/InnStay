@@ -117,12 +117,15 @@ const InnStay = {
      */
     setupScrollListener() {
         const navbar = document.querySelector('.navbar');
+        const body = document.body;
         
         window.addEventListener('scroll', () => {
             if (window.scrollY > 100) {
                 navbar.classList.add('scrolled');
+                body.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
+                body.classList.remove('scrolled');
             }
         });
     },
