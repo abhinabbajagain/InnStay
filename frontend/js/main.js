@@ -4,6 +4,12 @@
    ============================================ */
 
 const InnStay = {
+    // Configuration
+    config: {
+        apiUrl: 'http://localhost:5000/api',
+        useLocalData: false, // Set to true to use hardcoded data instead of API
+    },
+
     /**
      * Initialize the application
      */
@@ -754,70 +760,127 @@ const InnStay = {
      * Load popular hotels
      */
     loadPopularHotels() {
+        if (!this.config.useLocalData) {
+            this.fetchHotelsFromAPI();
+        } else {
+            this.loadLocalHotels();
+        }
+    },
+
+    /**
+     * Fetch hotels from API
+     */
+    fetchHotelsFromAPI() {
+        fetch(`${this.config.apiUrl}/hotels?limit=6`)
+            .then(response => {
+                if (!response.ok) throw new Error('API request failed');
+                return response.json();
+            })
+            .then(data => {
+                const hotels = data.hotels || [];
+                const mappedHotels = hotels.map((h, idx) => ({
+                    id: h.id || idx + 1,
+                    name: h.title || h.name || 'Hotel',
+                    location: h.location || 'Location',
+                    price: h.price || 100,
+                    rating: h.rating || 4.5,
+                    reviews: h.reviews || 100,
+                    image: h.image || h.photo_url || 'https://via.placeholder.com/280x260',
+                    isFavorite:false,
+                    isGuestFavorite: Math.random() > 0.5
+                }));
+                
+                const container = document.getElementById('popularHotels');
+                if (container) {
+                    container.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                    this.attachCardListeners();
+                }
+                const container2 = document.getElementById('nextMonthHotels');
+                if (container2) {
+                    container2.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                    this.attachCardListeners();
+                }
+                const container3 = document.getElementById('tokyoHotels');
+                if (container3) {
+                    container3.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                    this.attachCardListeners();
+                }
+                console.log('Hotels loaded from API:', mappedHotels.length);
+            })
+            .catch(error => {
+                console.warn('API error, falling back to local data:', error);
+                this.loadLocalHotels();
+            });
+    },
+
+    /**
+     * Load local hotels (fallback)
+     */
+    loadLocalHotels() {
         const hotels = [
             {
                 id: 1,
-                name: 'Room in Khet Phra Nakhon',
-                location: 'Bangkok, Thailand',
-                price: 45,
+                name: 'Charming Downtown Loft',
+                location: 'Lower Manhattan, New York, NY',
+                price: 185,
                 rating: 4.86,
-                reviews: 127,
-                image: 'https://via.placeholder.com/280x260/D4A5A5/FFFFFF?text=Bangkok+Room',
+                reviews: 218,
+                image: 'https://images.unsplash.com/photo-1631049307038-da31e36f2d5c?w=500',
                 isFavorite: false,
                 isGuestFavorite: true
             },
             {
                 id: 2,
-                name: 'Apartment in Sathon',
-                location: 'Bangkok, Thailand',
-                price: 72,
+                name: 'Modern City Center Suite',
+                location: 'Midtown Manhattan, New York, NY',
+                price: 215,
                 rating: 4.94,
-                reviews: 89,
-                image: 'https://via.placeholder.com/280x260/A8D5BA/FFFFFF?text=Bangkok+Apt',
+                reviews: 289,
+                image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
                 isFavorite: false,
                 isGuestFavorite: true
             },
             {
                 id: 3,
-                name: 'Apartment in Khet Ratchathewi',
-                location: 'Bangkok, Thailand',
-                price: 86,
-                rating: 4.95,
+                name: 'Cozy Studio with Rooftop',
+                location: 'Upper West Side, New York, NY',
+                price: 145,
+                rating: 4.78,
                 reviews: 156,
-                image: 'https://via.placeholder.com/280x260/F7DC6F/FFFFFF?text=Bangkok+Apt2',
+                image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=500',
                 isFavorite: false,
                 isGuestFavorite: false
             },
             {
                 id: 4,
-                name: 'Apartment in Khlong Toei',
-                location: 'Bangkok, Thailand',
-                price: 126,
-                rating: 4.99,
-                reviews: 203,
-                image: 'https://via.placeholder.com/280x260/82E0AA/FFFFFF?text=Bangkok+Apt3',
+                name: 'Luxury 3-Bedroom Brownstone',
+                location: 'Brooklyn Heights, New York, NY',
+                price: 325,
+                rating: 4.95,
+                reviews: 342,
+                image: 'https://images.unsplash.com/photo-1614008375896-cb53fc677b86?w=500',
                 isFavorite: false,
                 isGuestFavorite: true
             },
             {
                 id: 5,
-                name: 'Apartment in Khet Ratchathewi',
-                location: 'Bangkok, Thailand',
-                price: 112,
-                rating: 4.86,
-                reviews: 94,
-                image: 'https://via.placeholder.com/280x260/F8B88B/FFFFFF?text=Bangkok+Apt4',
+                name: 'Trendy SoHo Loft',
+                location: 'SoHo, New York, NY',
+                price: 275,
+                rating: 4.85,
+                reviews: 201,
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
                 isFavorite: false,
                 isGuestFavorite: false
             },
             {
                 id: 6,
-                name: 'Room in Khet Huai Kwang',
-                location: 'Bangkok, Thailand',
-                price: 41,
-                rating: 4.96,
-                reviews: 112,
-                image: 'https://via.placeholder.com/280x260/F5B7B1/FFFFFF?text=Bangkok+Room2',
+                name: 'Stunning Manhattan Penthouse',
+                location: 'Tribeca, New York, NY',
+                price: 450,
+                rating: 5.0,
+                reviews: 183,
+                image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
                 isFavorite: false,
                 isGuestFavorite: true
             }
@@ -840,6 +903,7 @@ const InnStay = {
             container3.innerHTML = hotels.map(hotel => this.createPropertyCard(hotel)).join('');
             this.attachCardListeners();
         }
+        console.log('Using local hotel data');
     },
 
     /**

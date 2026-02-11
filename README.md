@@ -54,44 +54,78 @@ InnStay/
 
 ## Installation & Setup
 
-### Prerequisites
+### Quick Start (with API)
+
+**Windows:**
+```bash
+.\setup.bat
+```
+
+**Linux/macOS:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+### Manual Setup
+
+**Prerequisites**
 - Python 3.7+
-- MySQL Server
 - Git
 
-### Steps
-1. Clone the repository
+**Steps**
+
+1. Clone repository
    ```bash
    git clone https://github.com/abhinabbajagain/InnStay.git
    cd InnStay
    ```
 
-2. Create virtual environment
+2. Install dependencies
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   cd backend
+   pip install -r requirements.txt
    ```
 
-3. Install dependencies
+3. Configure API (optional but recommended)
+   - Get free Amadeus API credentials: https://developers.amadeus.com/
+   - Copy `.env.example` to `.env`
+   - Add your API credentials to `.env`
+
+4. Start backend API server
    ```bash
-   pip install -r backend/requirements.txt
+   cd backend
+   python app.py
    ```
+   Server runs at: `http://localhost:5000`
 
-4. Setup database
+5. Start frontend (in new terminal)
    ```bash
-   mysql -u root -p < database/schema.sql
+   cd frontend
+   python -m http.server 8000
    ```
+   Access app at: `http://localhost:8000`
 
-5. Configure environment variables
-   - Create `.env` file in backend folder
-   - Add database credentials
+### Using Without API
 
-6. Run the application
-   ```bash
-   python backend/app.py
-   ```
+If you don't want to set up the API:
+1. In `frontend/js/main.js`, change `useLocalData: false` to `useLocalData: true`
+2. Skip the backend setup - app uses 8 fallback hotels
+3. Frontend still works locally
 
-7. Access at `http://localhost:5000`
+## Third-Party API Integration
+
+InnStay now integrates with **Amadeus Hotel API** for real-time hotel data!
+
+### Features
+- ✅ Real hotel data from Amadeus
+- ✅ Automatic fallback to 8 local hotels if API unavailable
+- ✅ Error handling and graceful degradation
+- ✅ Works offline with local data
+- ✅ Free tier (no credit card required)
+
+### Setup Guide
+See [API_SETUP_GUIDE.md](API_SETUP_GUIDE.md) for complete integration instructions
 
 ## User Roles
 
