@@ -19,22 +19,69 @@ const InnStay = {
      */
     setupEventListeners() {
         const searchForm = document.getElementById('searchForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
+        const expandSearchBtn = document.getElementById('expandSearchBtn');
+        const closeExpandedSearch = document.getElementById('closeExpandedSearch');
+        const expandedSearchForm = document.getElementById('expandedSearchForm');
+        const menuBtn = document.getElementById('menuBtn');
+        const menuDropdown = document.getElementById('menuDropdown');
 
+        // Search form
         if (searchForm) {
             searchForm.addEventListener('submit', (e) => this.handleSearch(e));
         }
 
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => {
-                window.location.href = 'pages/login.html';
+        // Expand search button
+        if (expandSearchBtn) {
+            expandSearchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('expandedSearchContainer').style.display = 'block';
             });
         }
 
-        if (registerBtn) {
-            registerBtn.addEventListener('click', () => {
-                window.location.href = 'pages/register.html';
+        // Close expanded search
+        if (closeExpandedSearch) {
+            closeExpandedSearch.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('expandedSearchContainer').style.display = 'none';
+            });
+        }
+
+        // Expanded search form submit
+        if (expandedSearchForm) {
+            expandedSearchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const destination = document.getElementById('destination-expanded').value;
+                const checkin = document.getElementById('checkin-expanded').value;
+                const checkout = document.getElementById('checkout-expanded').value;
+                const guests = document.getElementById('guests-expanded').value;
+
+                if (!destination || !checkin || !checkout || !guests) {
+                    this.showAlert('Please fill in all search fields', 'warning');
+                    return;
+                }
+
+                sessionStorage.setItem('search', JSON.stringify({
+                    destination,
+                    checkin,
+                    checkout,
+                    guests
+                }));
+                
+                window.location.href = 'pages/search.html';
+            });
+        }
+
+        // Menu button
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                menuDropdown.classList.toggle('show');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.navbar-right') && !e.target.closest('.menu-dropdown')) {
+                    menuDropdown.classList.remove('show');
+                }
             });
         }
     },

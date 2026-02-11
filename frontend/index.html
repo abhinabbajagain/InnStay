@@ -21,34 +21,38 @@
             <a class="navbar-brand" href="index.html">
                 <i class="fas fa-building"></i> InnStay
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#homes"><i class="fas fa-home"></i> Homes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#experiences"><i class="fas fa-heart"></i> Experiences</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services"><i class="fas fa-tools"></i> Services</a>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a class="nav-link" href="#">Become a host</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn-icon-link" id="loginBtn" title="Login">
-                            <i class="fas fa-globe"></i>
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link btn-icon-link" id="menuBtn" title="Menu">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </li>
-                </ul>
+            
+            <!-- Center Navigation Items -->
+            <div class="navbar-center">
+                <a class="nav-link" href="#homes">
+                    <i class="fas fa-home"></i> Homes
+                </a>
+                <a class="nav-link" href="#experiences">
+                    <i class="fas fa-heart"></i> Experiences
+                </a>
+                <a class="nav-link" href="#services">
+                    <i class="fas fa-tools"></i> Services
+                </a>
+            </div>
+
+            <!-- Right Side Icons & Menu -->
+            <div class="navbar-right">
+                <button class="nav-link btn-icon-link" title="Language">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button class="nav-link btn-menu" id="menuBtn" title="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="pages/login.html" class="menu-item">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="pages/register.html" class="menu-item">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
             </div>
         </div>
     </nav>
@@ -71,8 +75,38 @@
                             <label>Who</label>
                             <input type="text" id="guests" placeholder="Add guests" class="form-control" required>
                         </div>
-                        <button type="submit" class="search-btn">
+                        <button type="button" class="search-btn" id="expandSearchBtn">
                             <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Expanded Search Bar (Hidden by default) -->
+            <div class="expanded-search-container" id="expandedSearchContainer" style="display: none;">
+                <form id="expandedSearchForm" class="expanded-search-form">
+                    <div class="expanded-search-box">
+                        <div class="expanded-search-field">
+                            <label>Where</label>
+                            <input type="text" id="destination-expanded" placeholder="Search destinations" class="form-control">
+                        </div>
+                        <div class="expanded-search-field">
+                            <label>Check-in</label>
+                            <input type="date" id="checkin-expanded" class="form-control">
+                        </div>
+                        <div class="expanded-search-field">
+                            <label>Check-out</label>
+                            <input type="date" id="checkout-expanded" class="form-control">
+                        </div>
+                        <div class="expanded-search-field">
+                            <label>Guests</label>
+                            <input type="text" id="guests-expanded" placeholder="Add guests" class="form-control">
+                        </div>
+                        <button type="submit" class="expanded-search-btn">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <button type="button" class="close-expanded-search" id="closeExpandedSearch">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
                 </form>
