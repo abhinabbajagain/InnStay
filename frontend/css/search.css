@@ -9,7 +9,7 @@
 
 .search-page {
     min-height: 100vh;
-    background-color: var(--light-color);
+    background-color: #ffffff;
     padding: 30px 20px;
 }
 
@@ -19,12 +19,13 @@
 
 .filters-sidebar {
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
     height: fit-content;
     position: sticky;
     top: 20px;
+    border: 1px solid #e0e0e0;
 }
 
 .filter-section {
@@ -82,7 +83,7 @@
 .form-range::-webkit-slider-thumb {
     width: 20px;
     height: 20px;
-    background: var(--primary-color);
+    background: #FF5A5F;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -90,7 +91,7 @@
 .form-range::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: var(--primary-color);
+    background: #FF5A5F;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -101,9 +102,10 @@
 
 .search-results {
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #e0e0e0;
 }
 
 .results-header {
@@ -140,7 +142,7 @@
 
 .sort-dropdown:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 90, 95, 0.1);
     outline: none;
 }
 
@@ -151,7 +153,7 @@
 .hotel-result {
     display: flex;
     border: 1px solid #e0e0e0;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
     margin-bottom: 20px;
     transition: var(--transition);
@@ -159,8 +161,8 @@
 }
 
 .hotel-result:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+    border-color: #d0d0d0;
 }
 
 .hotel-result-image {
@@ -217,7 +219,7 @@
 }
 
 .hotel-result-rating .star {
-    color: var(--warning-color);
+    color: #FF6E1A;
     margin-right: 2px;
 }
 
@@ -229,12 +231,13 @@
 }
 
 .amenity-badge {
-    background-color: #f0f0f0;
+    background-color: #f7f7f7;
     padding: 6px 12px;
-    border-radius: 20px;
+    border-radius: 6px;
     font-size: 0.85rem;
-    color: var(--secondary-color);
+    color: var(--text-light);
     white-space: nowrap;
+    border: 1px solid #e0e0e0;
 }
 
 .amenity-badge i {

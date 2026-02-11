@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    background: linear-gradient(135deg, #FF5A5F 0%, #FF7B7F 100%);
 }
 
 .auth-container {
@@ -27,8 +27,8 @@
 
 .auth-card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     padding: 40px;
 }
 
@@ -83,7 +83,7 @@
 
 .form-group input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 90, 95, 0.1);
     outline: none;
 }
 
@@ -186,9 +186,9 @@
 }
 
 .btn-login:hover {
-    background-color: #0b5ed7;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    background-color: #ff3d47;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-login:disabled {
