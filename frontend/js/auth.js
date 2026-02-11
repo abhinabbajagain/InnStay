@@ -18,6 +18,13 @@ const Auth = {
             this.setupPasswordToggle();
         }
 
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+            this.setupPasswordToggle();
+            this.setupPasswordValidation();
+        }
+
         console.log('✓ Auth module initialized');
     },
 
@@ -72,6 +79,76 @@ const Auth = {
     },
 
     /**
+     * Handle registration form submission
+     * @param {Event} event - Form submission event
+     */
+    handleRegister(event) {
+        event.preventDefault();
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const agreeTerms = document.getElementById('agreeTerms').checked;
+
+        // Validate full name
+        if (!fullName) {
+            this.showRegisterError('Please enter your full name');
+            return;
+        }
+
+        // Validate email
+        if (!Utils.isValidEmail(email)) {
+            this.showRegisterError('Please enter a valid email address');
+            return;
+        }
+
+        // Validate password
+        const passwordValidation = Utils.validatePassword(password);
+        if (!passwordValidation.isValid) {
+            this.showRegisterError(passwordValidation.feedback[0]);
+            return;
+        }
+
+        // Check passwords match
+        if (password !== confirmPassword) {
+            this.showRegisterError('Passwords do not match');
+            return;
+        }
+
+        // Check terms agreed
+        if (!agreeTerms) {
+            this.showRegisterError('You must agree to the terms and conditions');
+            return;
+        }
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+            const newUser = {
+                id: Math.random(),
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            Utils.saveToStorage('currentUser', newUser);
+            document.getElementById('registerError').style.display = 'none';
+
+            InnStay.showAlert('Account created successfully! Redirecting...', 'success', 2000);
+
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        }, 1000);
+    },
+
+    /**
      * Toggle password visibility
      */
     setupPasswordToggle() {
@@ -89,11 +166,72 @@ const Auth = {
     },
 
     /**
+     * Setup password validation feedback for registration
+     */
+    setupPasswordValidation() {
+        const passwordInput = document.getElementById('password');
+        const strengthDiv = document.getElementById('passwordStrength');
+
+        if (passwordInput && strengthDiv) {
+            passwordInput.addEventListener('input', () => {
+                const validation = Utils.validatePassword(passwordInput.value);
+                
+                strengthDiv.innerHTML = '';
+                
+                // Show feedback messages
+                validation.feedback.forEach(msg => {
+                    const p = document.createElement('small');
+                    p.className = 'text-danger d-block';
+                    p.textContent = '✗ ' + msg;
+                    strengthDiv.appendChild(p);
+                });
+
+                // Show strength meter
+                if (passwordInput.value.length > 0) {
+                    const strengthBar = document.createElement('div');
+                    strengthBar.className = 'progress';
+                    const barClass = this.getStrengthClass(validation.score);
+                    strengthBar.innerHTML = `
+                        <div class="progress-bar ${barClass}" 
+                             style="width: ${(validation.score / 4) * 100}%">
+                        </div>
+                    `;
+                    strengthDiv.appendChild(strengthBar);
+                }
+            });
+        }
+    },
+
+    /**
+     * Get CSS class for password strength
+     * @param {Number} score - Password strength score (0-4)
+     * @returns {String} CSS class name
+     */
+    getStrengthClass(score) {
+        if (score <= 1) return 'bg-danger';
+        if (score === 2) return 'bg-warning';
+        if (score === 3) return 'bg-info';
+        return 'bg-success';
+    },
+
+    /**
      * Show login error
      * @param {String} message - Error message
      */
     showLoginError(message) {
         const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    },
+
+    /**
+     * Show register error
+     * @param {String} message - Error message
+     */
+    showRegisterError(message) {
+        const errorDiv = document.getElementById('registerError');
         if (errorDiv) {
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';

@@ -66,6 +66,28 @@ body {
     color: var(--warning-color) !important;
 }
 
+/* Navbar Auth Buttons */
+#loginBtn,
+#registerBtn {
+    display: inline-block;
+    padding: 8px 16px !important;
+    margin-left: 10px !important;
+    background-color: rgba(255, 193, 7, 0.2);
+    border: 1px solid var(--warning-color);
+    border-radius: 5px;
+    transition: var(--transition);
+}
+
+#loginBtn:hover,
+#registerBtn:hover {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+#registerBtn {
+    margin-left: 10px !important;
+}
+
 /* ============================================
    Footer
    ============================================ */
