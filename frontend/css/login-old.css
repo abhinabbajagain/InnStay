@@ -1,5 +1,5 @@
 /* ============================================
-   InnStay - Login Page CSS (Airbnb Design)
+   InnStay - Login Page CSS
    Description: Styles specific to login page
    ============================================ */
 
@@ -21,31 +21,13 @@
     padding: 20px;
 }
 
-.back-home {
-    margin-bottom: 20px;
-}
-
-.back-home a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-}
-
-.back-home a:hover {
-    opacity: 0.8;
-}
-
 /* ============================================
    Auth Card
    ============================================ */
 
 .auth-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     padding: 40px;
 }
@@ -59,11 +41,11 @@
     color: var(--primary-color);
     font-weight: 700;
     margin-bottom: 10px;
-    font-size: 1.8rem;
+    font-size: 2rem;
 }
 
 .auth-header p {
-    color: var(--text-light);
+    color: var(--secondary-color);
     margin: 0;
     font-size: 0.95rem;
 }
@@ -85,7 +67,6 @@
     margin-bottom: 8px;
     display: block;
     color: var(--dark-color);
-    font-size: 0.9rem;
 }
 
 .form-group input[type="email"],
@@ -93,9 +74,9 @@
 .form-group input[type="text"],
 .form-group input[type="tel"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
+    padding: 10px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     transition: var(--transition);
 }
@@ -110,7 +91,7 @@
     display: block;
     margin-top: 5px;
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: var(--secondary-color);
 }
 
 /* ============================================
@@ -119,38 +100,28 @@
 
 .input-group {
     display: flex;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
     overflow: hidden;
-    transition: var(--transition);
 }
 
 .input-group input {
     flex: 1;
     border: none;
-    padding: 12px;
+    padding: 10px 12px;
     font-size: 0.95rem;
-    background: transparent;
 }
 
-.input-group input:focus {
-    box-shadow: none;
-    outline: none;
-}
-
-.password-toggle {
+.input-group button {
     border: none;
     background-color: transparent;
-    padding: 0 12px;
+    padding: 10px 15px;
     cursor: pointer;
-    color: var(--text-light);
+    color: var(--secondary-color);
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.password-toggle:hover {
+.input-group button:hover {
     color: var(--primary-color);
 }
 
@@ -189,7 +160,7 @@
 .remember-forgot a {
     color: var(--primary-color);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .remember-forgot a:hover {
@@ -207,15 +178,11 @@
     font-weight: 600;
     border: none;
     width: 100%;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
     margin-top: 10px;
     cursor: pointer;
     transition: var(--transition);
     font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
 .btn-login:hover {
@@ -225,9 +192,22 @@
 }
 
 .btn-login:disabled {
-    background-color: var(--text-light);
+    background-color: var(--secondary-color);
     cursor: not-allowed;
     transform: none;
+}
+
+/* ============================================
+   Error Alert
+   ============================================ */
+
+#loginError {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-top: 15px;
+    border: 1px solid #f5c7d2;
 }
 
 /* ============================================
@@ -238,8 +218,12 @@
     text-align: center;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-light);
+    border-top: 1px solid #dee2e6;
+}
+
+.auth-footer p {
+    color: var(--secondary-color);
+    margin: 0 0 10px 0;
     font-size: 0.9rem;
 }
 
@@ -253,58 +237,88 @@
     text-decoration: underline;
 }
 
-/* ============================================
-   Error & Success Alerts
-   ============================================ */
-
-.alert {
-    margin-top: 15px;
+.auth-footer .btn {
+    padding: 10px 20px;
 }
 
-.alert-danger {
-    background-color: #fee;
-    color: #c33;
-    border: 1px solid #fcc;
+/* ============================================
+   Back Home Link
+   ============================================ */
+
+.back-home {
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.back-home a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.back-home a:hover {
+    color: var(--warning-color);
+}
+
+/* ============================================
+   Password Strength Indicator
+   ============================================ */
+
+.password-strength {
+    margin-top: 10px;
+}
+
+.password-strength small {
+    display: block;
+    font-size: 0.85rem;
+    margin: 5px 0;
+}
+
+.password-strength .progress {
+    height: 5px;
+    margin-top: 8px;
+}
+
+.password-strength .progress-bar {
+    transition: var(--transition);
 }
 
 /* ============================================
    Responsive Design
    ============================================ */
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .auth-container {
         padding: 15px;
     }
 
     .auth-card {
-        padding: 30px;
+        padding: 25px;
     }
 
     .auth-header h2 {
         font-size: 1.5rem;
     }
 
-    .form-group {
-        margin-bottom: 16px;
+    .remember-forgot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .back-home {
+        display: block;
+        margin-bottom: 15px;
     }
 }
 
-@media (max-width: 480px) {
-    .auth-card {
+@media (min-width: 481px) and (max-width: 768px) {
+    .auth-container {
         padding: 20px;
     }
 
-    .auth-header h2 {
-        font-size: 1.3rem;
-    }
-
-    .form-group input {
-        font-size: 16px;
-    }
-
-    .remember-forgot {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
+    .auth-card {
+        padding: 30px;
     }
 }

@@ -1,6 +1,6 @@
 /* ============================================
-   InnStay - Register Page CSS (Airbnb Design)
-   Description: Styles specific to register page
+   InnStay - Register Page CSS
+   Description: Styles for user registration page
    ============================================ */
 
 /* ============================================
@@ -21,31 +21,13 @@
     padding: 20px;
 }
 
-.back-home {
-    margin-bottom: 20px;
-}
-
-.back-home a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: var(--transition);
-}
-
-.back-home a:hover {
-    opacity: 0.8;
-}
-
 /* ============================================
    Auth Card
    ============================================ */
 
 .auth-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     padding: 40px;
 }
@@ -59,11 +41,11 @@
     color: var(--primary-color);
     font-weight: 700;
     margin-bottom: 10px;
-    font-size: 1.8rem;
+    font-size: 2rem;
 }
 
 .auth-header p {
-    color: var(--text-light);
+    color: var(--secondary-color);
     margin: 0;
     font-size: 0.95rem;
 }
@@ -85,7 +67,6 @@
     margin-bottom: 8px;
     display: block;
     color: var(--dark-color);
-    font-size: 0.9rem;
 }
 
 .form-group input[type="email"],
@@ -94,9 +75,9 @@
 .form-group input[type="tel"],
 .form-group input[type="checkbox"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
+    padding: 10px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
     font-size: 0.95rem;
     transition: var(--transition);
 }
@@ -119,105 +100,48 @@
     display: block;
     margin-top: 5px;
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: var(--secondary-color);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    margin-bottom: 20px;
 }
 
 /* ============================================
-   Input Group (Password with toggle)
+   Input Group
    ============================================ */
 
 .input-group {
     display: flex;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
     overflow: hidden;
-    transition: var(--transition);
 }
 
 .input-group input {
     flex: 1;
     border: none;
-    padding: 12px;
+    padding: 10px 12px;
     font-size: 0.95rem;
-    background: transparent;
 }
 
-.input-group input:focus {
-    box-shadow: none;
-    outline: none;
-}
-
-.password-toggle {
+.input-group button {
     border: none;
     background-color: transparent;
-    padding: 0 12px;
+    padding: 10px 15px;
     cursor: pointer;
-    color: var(--text-light);
+    color: var(--secondary-color);
     transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.password-toggle:hover {
+.input-group button:hover {
     color: var(--primary-color);
-}
-
-/* ============================================
-   Password Strength Indicator
-   ============================================ */
-
-.password-strength-indicator {
-    height: 5px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    margin-top: 8px;
-    overflow: hidden;
-}
-
-.strength-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 10px;
-    transition: width 0.3s ease, background-color 0.3s ease;
-    background-color: #e0e0e0;
-}
-
-.strength-fill.weak {
-    width: 33%;
-    background-color: #dc3545;
-}
-
-.strength-fill.moderate {
-    width: 66%;
-    background-color: #ffc107;
-}
-
-.strength-fill.strong {
-    width: 100%;
-    background-color: #198754;
-}
-
-.strength-feedback {
-    font-size: 0.8rem;
-    margin-top: 6px;
-    min-height: 20px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.strength-feedback.show-text {
-    color: #198754;
-    font-weight: 500;
-}
-
-.strength-feedback.show-text.warn {
-    color: #ffc107;
-}
-
-.strength-feedback.show-text.error {
-    color: #dc3545;
 }
 
 /* ============================================
@@ -225,27 +149,20 @@
    ============================================ */
 
 .terms-section {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    gap: 10px;
-    padding: 16px;
+    margin-bottom: 20px;
+    padding: 15px;
     background-color: var(--light-color);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
+    font-size: 0.85rem;
 }
 
-.terms-section input[type="checkbox"] {
-    margin: 0;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    cursor: pointer;
+.terms-section input {
+    margin-right: 8px;
 }
 
 .terms-section label {
     margin: 0;
-    font-size: 0.9rem;
-    color: var(--dark-color);
+    display: inline;
     cursor: pointer;
 }
 
@@ -270,15 +187,11 @@
     font-weight: 600;
     border: none;
     width: 100%;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius);
     margin-top: 10px;
     cursor: pointer;
     transition: var(--transition);
     font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
 .btn-register:hover {
@@ -288,9 +201,61 @@
 }
 
 .btn-register:disabled {
-    background-color: var(--text-light);
+    background-color: var(--secondary-color);
     cursor: not-allowed;
     transform: none;
+}
+
+/* ============================================
+   Error & Success Alerts
+   ============================================ */
+
+#registerError {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-top: 15px;
+    border: 1px solid #f5c7d2;
+}
+
+#passwordStrength {
+    margin-top: 10px;
+}
+
+#passwordStrength small {
+    display: block;
+    font-size: 0.85rem;
+    margin: 5px 0;
+}
+
+#passwordStrength .progress {
+    height: 5px;
+    margin-top: 8px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#passwordStrength .progress-bar {
+    height: 100%;
+    transition: var(--transition);
+}
+
+#passwordStrength .bg-danger {
+    background-color: #dc3545;
+}
+
+#passwordStrength .bg-warning {
+    background-color: #ffc107;
+}
+
+#passwordStrength .bg-info {
+    background-color: #0dcaf0;
+}
+
+#passwordStrength .bg-success {
+    background-color: #198754;
 }
 
 /* ============================================
@@ -301,8 +266,12 @@
     text-align: center;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-light);
+    border-top: 1px solid #dee2e6;
+}
+
+.auth-footer p {
+    color: var(--secondary-color);
+    margin: 0 0 10px 0;
     font-size: 0.9rem;
 }
 
@@ -316,18 +285,65 @@
     text-decoration: underline;
 }
 
-/* ============================================
-   Error & Success Alerts
-   ============================================ */
-
-.alert {
-    margin-top: 15px;
+.auth-footer .btn {
+    padding: 10px 20px;
 }
 
-.alert-danger {
-    background-color: #fee;
-    color: #c33;
-    border: 1px solid #fcc;
+/* ============================================
+   Back Home Link
+   ============================================ */
+
+.back-home {
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.back-home a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.back-home a:hover {
+    color: var(--warning-color);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 15px;
+    }
+
+    .auth-card {
+        padding: 25px;
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .back-home {
+        display: block;
+        margin-bottom: 15px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .auth-container {
+        padding: 20px;
+    }
+
+    .auth-card {
+        padding: 30px;
+    }
 }
 
 /* ============================================
@@ -336,8 +352,8 @@
 
 .modal-content {
     border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     animation: slideInModal 0.3s ease-out;
 }
 
@@ -356,13 +372,13 @@
     background: linear-gradient(135deg, #FF5A5F 0%, #ff3d47 100%);
     color: white;
     border: none;
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    border-radius: 12px 12px 0 0;
     padding: 20px;
 }
 
 .modal-header .modal-title {
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     letter-spacing: 0.5px;
 }
 
@@ -381,16 +397,16 @@
     max-height: 500px;
     overflow-y: auto;
     line-height: 1.6;
-    color: var(--dark-color);
+    color: #333;
 }
 
 .modal-body h6 {
-    color: var(--primary-color);
+    color: #FF5A5F;
     font-weight: 700;
     margin-top: 20px;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid var(--light-color);
+    border-bottom: 2px solid #f0f0f0;
 }
 
 .modal-body h6:first-child {
@@ -414,7 +430,7 @@
 }
 
 .modal-footer {
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid #e0e0e0;
     padding: 15px 25px;
     display: flex;
     justify-content: flex-end;
@@ -424,20 +440,20 @@
 .modal-footer .btn {
     padding: 8px 24px;
     font-weight: 600;
-    border-radius: var(--border-radius-sm);
-    transition: var(--transition);
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
 .modal-footer .btn-secondary {
-    background-color: var(--light-color);
-    color: var(--dark-color);
+    background-color: #e0e0e0;
+    color: #333;
     border: none;
 }
 
 .modal-footer .btn-secondary:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+    background-color: #d0d0d0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Scrollbar styling for modal body */
@@ -446,12 +462,12 @@
 }
 
 .modal-body::-webkit-scrollbar-track {
-    background: var(--light-color);
+    background: #f1f1f1;
     border-radius: 10px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
+    background: #FF5A5F;
     border-radius: 10px;
 }
 
@@ -459,27 +475,8 @@
     background: #ff3d47;
 }
 
-/* ============================================
-   Responsive Design
-   ============================================ */
-
+/* Responsive modal design */
 @media (max-width: 768px) {
-    .auth-container {
-        padding: 15px;
-    }
-
-    .auth-card {
-        padding: 30px;
-    }
-
-    .auth-header h2 {
-        font-size: 1.5rem;
-    }
-
-    .form-group {
-        margin-bottom: 16px;
-    }
-
     .modal-dialog {
         margin: 20px;
     }
@@ -487,28 +484,9 @@
     .modal-body {
         max-height: 400px;
     }
-}
-
-@media (max-width: 480px) {
-    .auth-card {
-        padding: 20px;
-    }
-
-    .auth-header h2 {
-        font-size: 1.3rem;
-    }
-
-    .form-group input {
-        font-size: 16px;
-    }
-
-    .terms-section {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 
     .modal-header .modal-title {
-        font-size: 1.1rem;
+        font-size: 1.25rem;
     }
 
     .modal-body h6 {
