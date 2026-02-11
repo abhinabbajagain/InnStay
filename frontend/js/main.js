@@ -10,6 +10,7 @@ const InnStay = {
     init() {
         console.log('InnStay initialized');
         this.setupEventListeners();
+        this.setupScrollListener();
         this.loadPopularHotels();
         this.setupMinimumDates();
     },
@@ -84,6 +85,46 @@ const InnStay = {
                 }
             });
         }
+
+        // Compact search button
+        const compactSearchBtn = document.getElementById('compactSearchBtn');
+        if (compactSearchBtn) {
+            compactSearchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('expandedSearchContainer').style.display = 'block';
+                // Scroll to expanded search
+                setTimeout(() => {
+                    document.getElementById('expandedSearchContainer').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            });
+        }
+
+        // Compact search input focus
+        const compactSearch = document.getElementById('compactSearch');
+        if (compactSearch) {
+            compactSearch.addEventListener('focus', (e) => {
+                e.preventDefault();
+                document.getElementById('expandedSearchContainer').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('expandedSearchContainer').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            });
+        }
+    },
+
+    /**
+     * Setup scroll listener for navbar transformation
+     */
+    setupScrollListener() {
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
     },
 
     /**
