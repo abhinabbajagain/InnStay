@@ -72,45 +72,16 @@ const InnStay = {
                 }
             });
         }
-
-        // Compact search button - scroll to main search
-        const compactSearchBtn = document.getElementById('compactSearchBtn');
-        if (compactSearchBtn) {
-            compactSearchBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                document.querySelector('.search-hero').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-
-        // Compact search input - scroll to main search
-        const compactSearch = document.getElementById('compactSearch');
-        if (compactSearch) {
-            compactSearch.addEventListener('focus', (e) => {
-                e.preventDefault();
-                document.querySelector('.search-hero').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
     },
 
     /**
-     * Setup scroll listener for navbar transformation and active nav tracking
+     * Setup scroll listener for active nav tracking
      */
     setupScrollListener() {
-        const navbar = document.querySelector('.navbar');
-        const body = document.body;
         const navLinks = document.querySelectorAll('.navbar-center .nav-link');
         const sections = ['homes', 'experiences', 'services'];
         
         window.addEventListener('scroll', () => {
-            // Navbar scroll state
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-                body.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-                body.classList.remove('scrolled');
-            }
-
             // Update active nav link based on scroll position
             let currentSection = null;
             sections.forEach(sectionId => {
