@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <!-- External CSS -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/index.css">
@@ -29,20 +31,14 @@
                 </a>
                 <a class="nav-link" href="#experiences">
                     <i class="fas fa-lightbulb"></i> Experiences
-                    <span class="nav-badge">NEW</span>
                 </a>
                 <a class="nav-link" href="#services">
                     <i class="fas fa-concierge-bell"></i> Services
-                    <span class="nav-badge">NEW</span>
                 </a>
             </div>
 
             <!-- Right Side Actions & Menu -->
             <div class="navbar-right">
-                <a href="#" class="become-host-btn">Become a host</a>
-                <button class="nav-link btn-icon-link" title="Language">
-                    <i class="fas fa-globe"></i>
-                </button>
                 <button class="nav-link btn-menu" id="menuBtn" title="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -66,26 +62,234 @@
             <div class="search-box-container">
                 <form id="searchForm" class="search-form">
                     <div class="search-box">
-                        <div class="search-field">
+                        <div class="search-field" id="whereField" data-destination="Search destinations">
                             <label>Where</label>
-                            <input type="text" id="destination" placeholder="Search destinations" class="form-control" required>
+                            <input type="text" id="destination" placeholder="Search destinations" class="form-control" readonly>
                         </div>
-                        <div class="search-field">
+                        <div class="search-field" id="whenField" data-date="Anytime">
                             <label>When</label>
-                            <input type="date" id="checkin" class="form-control" required>
+                            <input type="date" id="checkin" class="form-control">
                         </div>
-                        <div class="search-field">
+                        <div class="search-field" id="guestField" data-guests="Add guests">
                             <label>Who</label>
-                            <input type="text" id="guests" placeholder="Add guests" class="form-control" required>
+                            <input type="text" id="guests" placeholder="Add guests" class="form-control">
                         </div>
                         <button type="button" class="search-btn" id="expandSearchBtn">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                 </form>
+                
+                <!-- Where Picker Modal -->
+                <div class="where-picker-modal" id="wherePickerModal">
+                    <div class="where-picker-container">
+                        <div class="where-search-input">
+                            <input type="text" id="destinationSearch" placeholder="Search destinations" class="form-control">
+                        </div>
+                        
+                        <div class="where-suggestions">
+                            <h4 class="where-section-title">Suggested destinations</h4>
+                            <div class="destinations-list" id="destinationsList">
+                                <!-- Destination items will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date Picker Modal -->
+                <div class="date-picker-modal" id="datePickerModal">
+                    <div class="date-picker-container">
+                        <!-- Anytime Button -->
+                        <button class="anytime-btn" id="anytimeBtn">Anytime</button>
+                        
+                        <!-- Tabs -->
+                        <div class="date-picker-tabs">
+                            <button class="date-tab active" data-tab="dates">Dates</button>
+                            <button class="date-tab" data-tab="months">Months</button>
+                            <button class="date-tab" data-tab="flexible">Flexible</button>
+                        </div>
+                        
+                        <!-- Dates Tab Content -->
+                        <div class="tab-content active" data-tab="dates">
+                            <div class="calendar-wrapper">
+                                <div class="calendar">
+                                    <div class="calendar-header">
+                                        <h3 id="monthYear1">February 2026</h3>
+                                    </div>
+                                    <div class="calendar-grid" id="calendar1"></div>
+                                </div>
+                                <div class="calendar">
+                                    <div class="calendar-header">
+                                        <h3 id="monthYear2">March 2026</h3>
+                                    </div>
+                                    <div class="calendar-grid" id="calendar2"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Select Buttons -->
+                            <div class="quick-select">
+                                <button class="quick-btn" data-days="exact">Exact dates</button>
+                                <button class="quick-btn" data-days="1">+ 1 day</button>
+                                <button class="quick-btn" data-days="2">+ 2 days</button>
+                                <button class="quick-btn" data-days="3">+ 3 days</button>
+                                <button class="quick-btn" data-days="7">+ 7 days</button>
+                                <button class="quick-btn" data-days="14">+ 14 days</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Months Tab Content -->
+                        <div class="tab-content" data-tab="months">
+                            <div class="months-content">
+                                <h3>When's your trip?</h3>
+                                <div class="month-slider-container">
+                                    <div class="month-slider">
+                                        <div class="month-circle">
+                                            <input type="range" id="monthRange" min="1" max="12" value="1" class="month-range-input">
+                                            <div class="month-display">
+                                                <span id="monthCount" class="month-number">1</span>
+                                                <span class="month-label">month</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="month-date-range">
+                                    <span id="monthDateStart">Mar 1</span> to <span id="monthDateEnd">Apr 1</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Flexible Tab Content -->
+                        <div class="tab-content" data-tab="flexible">
+                            <div class="flexible-content">
+                                <div class="flexible-section">
+                                    <h3>How long would you like to stay?</h3>
+                                    <div class="flexible-buttons">
+                                        <button class="flex-btn" data-days="weekend">Weekend</button>
+                                        <button class="flex-btn" data-days="week">Week</button>
+                                        <button class="flex-btn" data-days="month">Month</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flexible-section">
+                                    <h3>Go anytime</h3>
+                                    <div class="flex-months-wrapper">
+                                        <div class="flex-months-grid" id="flexMonthsGrid"></div>
+                                        <button class="flex-nav-btn" id="flexNavBtn" aria-label="Next months">›</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Guest Picker Modal -->
+                <div class="guest-picker-modal" id="guestPickerModal">
+                    <div class="guest-picker-container">
+                        <!-- Adults -->
+                        <div class="guest-category">
+                            <div class="guest-info">
+                                <h4 class="guest-title">Adults</h4>
+                                <p class="guest-subtitle">Ages 13 or above</p>
+                            </div>
+                            <div class="guest-controls">
+                                <button class="guest-btn minus" data-type="adults">−</button>
+                                <span class="guest-count" id="adultsCount">0</span>
+                                <button class="guest-btn plus" data-type="adults">+</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Children -->
+                        <div class="guest-category">
+                            <div class="guest-info">
+                                <h4 class="guest-title">Children</h4>
+                                <p class="guest-subtitle">Ages 2 – 12</p>
+                            </div>
+                            <div class="guest-controls">
+                                <button class="guest-btn minus" data-type="children">−</button>
+                                <span class="guest-count" id="childrenCount">0</span>
+                                <button class="guest-btn plus" data-type="children">+</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Infants -->
+                        <div class="guest-category">
+                            <div class="guest-info">
+                                <h4 class="guest-title">Infants</h4>
+                                <p class="guest-subtitle">Under 2</p>
+                            </div>
+                            <div class="guest-controls">
+                                <button class="guest-btn minus" data-type="infants">−</button>
+                                <span class="guest-count" id="infantsCount">0</span>
+                                <button class="guest-btn plus" data-type="infants">+</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pets -->
+                        <div class="guest-category">
+                            <div class="guest-info">
+                                <h4 class="guest-title">Pets</h4>
+                                <p class="guest-subtitle">Bringing a service animal?</p>
+                            </div>
+                            <div class="guest-controls">
+                                <button class="guest-btn minus" data-type="pets">−</button>
+                                <span class="guest-count" id="petsCount">0</span>
+                                <button class="guest-btn plus" data-type="pets">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Map/Search Results View -->
+    <div class="map-view-modal" id="mapViewModal">
+        <div class="map-view-container">
+            <!-- Sticky Search Bar -->
+            <div class="map-search-bar">
+                <div class="map-search-content">
+                    <div class="map-search-box">
+                        <div class="map-search-field">
+                            <span id="mapLocation">Homes nearby</span>
+                        </div>
+                        <div class="map-search-field">
+                            <span id="mapDates">Any week</span>
+                        </div>
+                        <div class="map-search-field">
+                            <span id="mapGuests">Add guests</span>
+                        </div>
+                        <button class="map-search-btn" id="mapCloseBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <button class="map-filters-btn">
+                        <i class="fas fa-sliders-h"></i> Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="map-content">
+                <!-- Left: Properties List -->
+                <div class="map-list-section">
+                    <div class="properties-count">
+                        <p id="propertiesCount">Over 1,000 homes</p>
+                        <p class="price-note">
+                            <i class="fas fa-heart"></i> Prices include all fees
+                        </p>
+                    </div>
+                    <div class="map-properties-grid" id="mapPropertiesGrid">
+                        <!-- Properties will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Right: Map -->
+                <div class="map-section">
+                    <div id="mapContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Popular Homes Section -->
     <section class="properties-section" id="homes">
@@ -183,6 +387,8 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet Map JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <!-- External JS -->
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
