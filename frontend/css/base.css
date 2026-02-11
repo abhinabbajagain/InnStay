@@ -101,11 +101,38 @@ body {
     align-items: center;
     gap: 6px;
     transition: var(--transition);
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.navbar-center .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    box-shadow: 0 2px 4px rgba(255, 90, 95, 0.2);
 }
 
 .navbar-center .nav-link:hover {
     color: var(--primary-color) !important;
-    transform: scale(1.08);
+    transform: scale(1.05);
+}
+
+.navbar-center .nav-link:hover::after {
+    width: 100%;
+}
+
+.navbar-center .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+.navbar-center .nav-link.active::after {
+    width: 100%;
 }
 
 /* Right Navigation */

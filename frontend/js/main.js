@@ -37,6 +37,28 @@ const InnStay = {
             });
         }
 
+        // Navigation links
+        document.querySelectorAll('.navbar-center .nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    // Remove active class from all nav links
+                    document.querySelectorAll('.navbar-center .nav-link').forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked link
+                    link.classList.add('active');
+                    
+                    // Smooth scroll to section
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
         // Menu button
         if (menuBtn) {
             menuBtn.addEventListener('click', () => {
@@ -71,13 +93,16 @@ const InnStay = {
     },
 
     /**
-     * Setup scroll listener for navbar transformation
+     * Setup scroll listener for navbar transformation and active nav tracking
      */
     setupScrollListener() {
         const navbar = document.querySelector('.navbar');
         const body = document.body;
+        const navLinks = document.querySelectorAll('.navbar-center .nav-link');
+        const sections = ['homes', 'experiences', 'services'];
         
         window.addEventListener('scroll', () => {
+            // Navbar scroll state
             if (window.scrollY > 100) {
                 navbar.classList.add('scrolled');
                 body.classList.add('scrolled');
@@ -85,6 +110,27 @@ const InnStay = {
                 navbar.classList.remove('scrolled');
                 body.classList.remove('scrolled');
             }
+
+            // Update active nav link based on scroll position
+            let currentSection = null;
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 3) {
+                        currentSection = sectionId;
+                    }
+                }
+            });
+
+            // Update active class
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href && href.substring(1) === currentSection) {
+                    link.classList.add('active');
+                }
+            });
         });
     },
 
