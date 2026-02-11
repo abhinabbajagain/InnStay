@@ -43,6 +43,25 @@
 .search-field {
     display: flex;
     flex-direction: column;
+    padding: 8px 16px;
+    border-right: 1px solid #e8e8e8;
+    transition: var(--transition);
+    cursor: text;
+}
+
+.search-field:first-child {
+    padding-left: 0;
+}
+
+.search-field:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.search-field:hover {
+    background: rgba(0, 0, 0, 0.02);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 .search-field label {
@@ -52,8 +71,6 @@
     margin-bottom: 6px;
     color: var(--dark-color);
 }
-
-.search-field input {
     padding: 8px 0;
     border: none;
     background: transparent;
