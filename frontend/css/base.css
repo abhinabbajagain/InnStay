@@ -47,7 +47,8 @@ body {
     background-color: #ffffff;
     border-bottom: 1px solid var(--border-color);
     padding: 12px 0;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1020;
     transition: var(--transition);
 }
