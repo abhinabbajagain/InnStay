@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="settings">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Settings</h1>
+                <p>Control system preferences and admin access.</p>
+            </div>
+
+            <div class="form-grid">
+                <div class="setting-card">
+                    <h2>General</h2>
+                    <div class="form-group">
+                        <label>Platform Name</label>
+                        <input type="text" value="InnStay">
+                    </div>
+                    <div class="form-group">
+                        <label>Support Email</label>
+                        <input type="email" value="support@innstay.com">
+                    </div>
+                </div>
+
+                <div class="setting-card">
+                    <h2>Notifications</h2>
+                    <div class="toggle-row">
+                        <span>Email alerts</span>
+                        <div class="switch"></div>
+                    </div>
+                    <div class="toggle-row">
+                        <span>SMS alerts</span>
+                        <div class="switch"></div>
+                    </div>
+                    <div class="toggle-row">
+                        <span>Weekly reports</span>
+                        <div class="switch"></div>
+                    </div>
+                </div>
+
+                <div class="setting-card">
+                    <h2>Security</h2>
+                    <div class="form-group">
+                        <label>Reset admin password</label>
+                        <input type="password" placeholder="New password">
+                    </div>
+                    <div class="form-group">
+                        <label>Two-factor authentication</label>
+                        <select>
+                            <option>Enabled</option>
+                            <option>Disabled</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+</body>
+</html>

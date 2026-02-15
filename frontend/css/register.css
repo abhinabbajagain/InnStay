@@ -169,6 +169,17 @@
     color: var(--text-light);
 }
 
+.auth-error {
+    display: none;
+    background: #fdeaea;
+    color: #b91c1c;
+    border: 1px solid #f4b4b4;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+}
+
 /* ============================================
    Input Group (Password with toggle)
    ============================================ */
@@ -208,6 +219,26 @@
 
 .password-toggle:hover {
     color: var(--dark-color);
+}
+
+#passwordStrength {
+    margin-top: 10px;
+}
+
+#passwordStrength small {
+    font-size: 0.8rem;
+}
+
+#passwordStrength .progress {
+    height: 6px;
+    margin-top: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e0e0e0;
+}
+
+#passwordStrength .progress-bar {
+    transition: width 0.3s ease;
 }
 
 /* ============================================

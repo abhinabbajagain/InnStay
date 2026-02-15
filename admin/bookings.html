@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Bookings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="bookings">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Bookings</h1>
+                <p>Track and resolve booking activity in real time.</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search by booking ID or guest">
+                <select>
+                    <option>Status: All</option>
+                    <option>Confirmed</option>
+                    <option>Pending</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Booking Requests</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-secondary"><i class="fa-solid fa-file-export"></i> Export</button>
+                        <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Booking</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Guest</th>
+                            <th>Hotel</th>
+                            <th>Dates</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#BKG-2190</td>
+                            <td>Emma Johnson</td>
+                            <td>Harbor View Suites</td>
+                            <td>Feb 20 - Feb 24</td>
+                            <td><span class="badge badge-success">Confirmed</span></td>
+                            <td>$860</td>
+                        </tr>
+                        <tr>
+                            <td>#BKG-2188</td>
+                            <td>Michael Lee</td>
+                            <td>Skyline Loft</td>
+                            <td>Feb 18 - Feb 22</td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>$640</td>
+                        </tr>
+                        <tr>
+                            <td>#BKG-2179</td>
+                            <td>Sarah Patel</td>
+                            <td>Garden Retreat</td>
+                            <td>Feb 27 - Mar 2</td>
+                            <td><span class="badge badge-danger">Cancelled</span></td>
+                            <td>$520</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+</body>
+</html>

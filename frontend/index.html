@@ -46,11 +46,21 @@
 
             <!-- Dropdown Menu -->
             <div class="menu-dropdown" id="menuDropdown">
-                <a href="pages/login.html" class="menu-item">
+                <a href="pages/login.html" class="menu-item" data-auth="login">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
-                <a href="pages/register.html" class="menu-item">
+                <a href="pages/register.html" class="menu-item" data-auth="register">
                     <i class="fas fa-user-plus"></i> Register
+                </a>
+                <a href="#" class="menu-item" data-auth="account" hidden>
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-label">My Account</span>
+                </a>
+                <a href="#" class="menu-item" data-auth="logout" hidden>
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                <a href="../admin/login.html" class="menu-item">
+                    <i class="fas fa-user-shield"></i> Admin Panel
                 </a>
             </div>
         </div>
@@ -391,6 +401,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <!-- External JS -->
     <script src="js/utils.js"></script>
+    <script src="js/hotel-api.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

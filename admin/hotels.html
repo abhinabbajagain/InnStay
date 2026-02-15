@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Hotels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="hotels">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Hotels</h1>
+                <p>Manage listings, availability, and performance.</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="hotelSearch" placeholder="Search hotels by name or city">
+                <select id="statusFilter">
+                    <option value="All">Status: All</option>
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Suspended">Suspended</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Hotel Listings</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-secondary"><i class="fa-solid fa-filter"></i> Filters</button>
+                        <button class="btn btn-primary" id="addHotelBtn"><i class="fa-solid fa-plus"></i> Add Hotel</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hotel</th>
+                            <th>City</th>
+                            <th>Rooms</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hotelTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="admin-modal" id="hotelModal">
+                <div class="admin-modal-content">
+                    <div class="admin-modal-header">
+                        <h2 id="hotelModalTitle">Add Hotel</h2>
+                        <button class="modal-close" type="button" data-modal-close>&times;</button>
+                    </div>
+                    <form id="hotelForm">
+                        <div class="admin-modal-body">
+                            <input type="hidden" name="hotelId" id="hotelId">
+                            <div class="modal-grid">
+                                <div class="form-group">
+                                    <label for="hotelName">Hotel Name</label>
+                                    <input type="text" id="hotelName" name="hotelName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelLocation">Location</label>
+                                    <input type="text" id="hotelLocation" name="hotelLocation" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelPrice">Price per night</label>
+                                    <input type="number" id="hotelPrice" name="hotelPrice" min="0" step="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelRating">Rating</label>
+                                    <input type="number" id="hotelRating" name="hotelRating" min="1" max="5" step="0.1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelReviews">Reviews</label>
+                                    <input type="number" id="hotelReviews" name="hotelReviews" min="0" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelStatus">Status</label>
+                                    <select id="hotelStatus" name="hotelStatus">
+                                        <option value="Active">Active</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Suspended">Suspended</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelImage">Main Image URL</label>
+                                    <input type="text" id="hotelImage" name="hotelImage" placeholder="https://">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelGallery">Gallery Images (comma separated)</label>
+                                    <input type="text" id="hotelGallery" name="hotelGallery" placeholder="https://, https://">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelAmenities">Amenities (comma separated)</label>
+                                    <input type="text" id="hotelAmenities" name="hotelAmenities" placeholder="WiFi, Pool">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelBedrooms">Bedrooms</label>
+                                    <input type="number" id="hotelBedrooms" name="hotelBedrooms" min="0" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelBeds">Beds</label>
+                                    <input type="number" id="hotelBeds" name="hotelBeds" min="0" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelBathrooms">Bathrooms</label>
+                                    <input type="number" id="hotelBathrooms" name="hotelBathrooms" min="0" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hotelGuests">Guests</label>
+                                    <input type="number" id="hotelGuests" name="hotelGuests" min="1" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hostName">Host Name</label>
+                                    <input type="text" id="hostName" name="hostName" placeholder="InnStay Host">
+                                </div>
+                                <div class="form-group span-full">
+                                    <label for="hotelDescription">Description</label>
+                                    <textarea id="hotelDescription" name="hotelDescription" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-modal-footer">
+                            <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Hotel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="../frontend/js/hotel-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+    <script src="js/admin-hotels.js"></script>
+</body>
+</html>

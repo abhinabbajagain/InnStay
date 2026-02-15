@@ -15,15 +15,24 @@ const Auth = {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-            this.setupPasswordToggle();
+            const rememberedEmail = Utils.getFromStorage('rememberEmail');
+            if (rememberedEmail) {
+                const emailInput = document.getElementById('email');
+                if (emailInput) {
+                    emailInput.value = rememberedEmail;
+                }
+            }
         }
 
         const registerForm = document.getElementById('registerForm');
         if (registerForm) {
             registerForm.addEventListener('submit', (e) => this.handleRegister(e));
-            this.setupPasswordToggle();
             this.setupPasswordValidation();
         }
+
+        this.setupPasswordToggle();
+        this.setupAuthCloseButtons();
+        this.setupSocialLogin();
 
         console.log('✓ Auth module initialized');
     },
@@ -37,7 +46,8 @@ const Auth = {
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const rememberMe = document.getElementById('rememberMe').checked;
+        const rememberToggle = document.getElementById('rememberMe');
+        const rememberMe = rememberToggle ? rememberToggle.checked : false;
         const errorDiv = document.getElementById('loginError');
 
         if (!Utils.isValidEmail(email)) {
@@ -69,11 +79,15 @@ const Auth = {
                 Utils.saveToStorage('rememberEmail', email);
             }
 
-            errorDiv.style.display = 'none';
-            InnStay.showAlert('Login successful! Redirecting...', 'success', 2000);
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            if (window.InnStay && typeof InnStay.showAlert === 'function') {
+                InnStay.showAlert('Login successful! Redirecting...', 'success', 2000);
+            }
 
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = '../index.html';
             }, 1500);
         }, 1000);
     },
@@ -138,12 +152,17 @@ const Auth = {
             };
 
             Utils.saveToStorage('currentUser', newUser);
-            document.getElementById('registerError').style.display = 'none';
+            const registerError = document.getElementById('registerError');
+            if (registerError) {
+                registerError.style.display = 'none';
+            }
 
-            InnStay.showAlert('Account created successfully! Redirecting...', 'success', 2000);
+            if (window.InnStay && typeof InnStay.showAlert === 'function') {
+                InnStay.showAlert('Account created successfully! Redirecting...', 'success', 2000);
+            }
 
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = '../index.html';
             }, 1500);
         }, 1000);
     },
@@ -152,17 +171,56 @@ const Auth = {
      * Toggle password visibility
      */
     setupPasswordToggle() {
-        const toggleBtn = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
+        const toggleButtons = document.querySelectorAll('.password-toggle');
 
-        if (toggleBtn && passwordInput) {
-            toggleBtn.addEventListener('click', () => {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                toggleBtn.querySelector('i').classList.toggle('fa-eye');
-                toggleBtn.querySelector('i').classList.toggle('fa-eye-slash');
+        toggleButtons.forEach(button => {
+            const input = button.closest('.input-group')?.querySelector('input');
+            if (!input) {
+                return;
+            }
+            button.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                button.querySelector('i').classList.toggle('fa-eye');
+                button.querySelector('i').classList.toggle('fa-eye-slash');
             });
+        });
+    },
+
+    /**
+     * Setup close button behavior
+     */
+    setupAuthCloseButtons() {
+        document.querySelectorAll('[data-close-auth]').forEach(button => {
+            button.addEventListener('click', () => {
+                window.location.href = '../index.html';
+            });
+        });
+    },
+
+    /**
+     * Demo social login buttons
+     */
+    setupSocialLogin() {
+        const buttons = document.querySelectorAll('.social-btn');
+        if (!buttons.length) {
+            return;
         }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const provider = button.dataset.provider || 'Social';
+                const user = {
+                    id: Date.now(),
+                    email: `${provider.toLowerCase()}@demo.innstay.com`,
+                    name: `${provider} User`,
+                    role: 'user'
+                };
+
+                Utils.saveToStorage('currentUser', user);
+                window.location.href = '../index.html';
+            });
+        });
     },
 
     /**
@@ -252,7 +310,9 @@ const Auth = {
     logout() {
         Utils.removeFromStorage('currentUser');
         Utils.removeFromStorage('rememberEmail');
-        InnStay.showAlert('Logged out successfully', 'info');
+        if (window.InnStay && typeof InnStay.showAlert === 'function') {
+            InnStay.showAlert('Logged out successfully', 'info');
+        }
         setTimeout(() => {
             window.location.href = '../index.html';
         }, 1000);

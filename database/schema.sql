@@ -56,10 +56,21 @@ CREATE TABLE hotels (
     phone VARCHAR(15),
     email VARCHAR(100),
     website VARCHAR(255),
+    price_per_night DECIMAL(10, 2) DEFAULT 0.00,
+    rating DECIMAL(3, 2) DEFAULT 4.50,
+    reviews INT DEFAULT 0,
+    image_url VARCHAR(255),
+    image_gallery JSON,
+    amenities JSON,
+    bedrooms INT DEFAULT 1,
+    beds INT DEFAULT 1,
+    bathrooms INT DEFAULT 1,
+    guests INT DEFAULT 2,
     star_rating INT DEFAULT 3,
     check_in_time TIME DEFAULT '14:00:00',
     check_out_time TIME DEFAULT '11:00:00',
     manager_id INT,
+    status ENUM('Active', 'Pending', 'Suspended') DEFAULT 'Active',
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -102,7 +113,7 @@ CREATE TABLE bookings (
     booking_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     hotel_id INT NOT NULL,
-    room_id INT NOT NULL,
+    room_id INT,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
     number_of_nights INT GENERATED ALWAYS AS (DATEDIFF(check_out_date, check_in_date)) STORED,
@@ -116,7 +127,7 @@ CREATE TABLE bookings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (hotel_id) REFERENCES hotels(hotel_id),
-    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE SET NULL,
     INDEX idx_user_id (user_id),
     INDEX idx_hotel_id (hotel_id),
     INDEX idx_status (status),
@@ -238,14 +249,57 @@ CREATE TABLE notifications (
 
 -- Insert sample users
 INSERT INTO users (name, email, password, phone, role) VALUES
-('Admin User', 'admin@innstay.com', 'admin123', '5551234567', 'admin'),
+('Admin User', 'admin@gmail.com', 'scrypt:32768:8:1$cPZBxKo3uzozUHHG$836f3ebcaf3e2a08f1c543cbe00d14b434e0ebb387bd8dab0fc1a039876eecf8ebe34748d9dcd810fcb81945f950d1ad95feb3c4bd0df7318502ab9ee923d46e', '5551234567', 'admin'),
 ('John Doe', 'john@example.com', 'password123', '5559876543', 'user'),
 ('Jane Smith', 'jane@example.com', 'password456', '5558765432', 'user');
 
 -- Insert sample hotels
-INSERT INTO hotels (name, address, city, country, phone, star_rating, manager_id) VALUES
-('Luxury Palace Hotel', '123 Main St', 'New York', 'USA', '5551234567', 5, 1),
-('Beach Resort Paradise', '456 Ocean Ave', 'Miami', 'USA', '5559876543', 4, 1);
+INSERT INTO hotels (
+    name, description, address, city, country, phone, star_rating, manager_id,
+    price_per_night, rating, reviews, image_url, image_gallery, amenities, bedrooms, beds, bathrooms, guests, status
+) VALUES
+(
+    'Luxury Palace Hotel',
+    'A premium stay with skyline views and boutique service.',
+    '123 Main St',
+    'New York',
+    'USA',
+    '5551234567',
+    5,
+    1,
+    320.00,
+    4.8,
+    210,
+    'https://images.unsplash.com/photo-1501117716987-c8e1ecb2101e?w=800',
+    '["https://images.unsplash.com/photo-1501117716987-c8e1ecb2101e?w=800"]',
+    '["WiFi", "Pool", "Gym"]',
+    2,
+    2,
+    2,
+    4,
+    'Active'
+),
+(
+    'Beach Resort Paradise',
+    'Oceanfront resort with spa access and sunset decks.',
+    '456 Ocean Ave',
+    'Miami',
+    'USA',
+    '5559876543',
+    4,
+    1,
+    240.00,
+    4.6,
+    180,
+    'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800',
+    '["https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800"]',
+    '["WiFi", "Pool", "Parking"]',
+    1,
+    1,
+    1,
+    2,
+    'Active'
+);
 
 -- Insert sample rooms
 INSERT INTO rooms (hotel_id, room_number, room_type, capacity, price_per_night, amenities) VALUES

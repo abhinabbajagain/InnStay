@@ -28,11 +28,17 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div id="menuDropdown" class="navbar-dropdown">
-                    <a href="../pages/login.html" class="dropdown-item">
+                    <a href="../pages/login.html" class="dropdown-item" data-auth="login">
                         <span>Login</span>
                     </a>
-                    <a href="../pages/register.html" class="dropdown-item">
+                    <a href="../pages/register.html" class="dropdown-item" data-auth="register">
                         <span>Sign up</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-auth="account" hidden>
+                        <span>My Account</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-auth="logout" hidden>
+                        <span>Logout</span>
                     </a>
                 </div>
             </div>
@@ -133,11 +139,14 @@
             </div>
 
             <!-- Reserve Button -->
-            <button class="reserve-button" onclick="alert('Booking feature coming soon!')">Reserve</button>
+            <button class="reserve-button" id="reserveBtn">Reserve</button>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/hotel-store.js"></script>
+    <script src="../js/hotel-api.js"></script>
     <script src="../js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -149,10 +158,21 @@
             } else {
                 window.location.href = '../index.html';
             }
+
+            const reserveBtn = document.getElementById('reserveBtn');
+            if (reserveBtn) {
+                reserveBtn.addEventListener('click', () => {
+                    alert('Booking feature coming soon!');
+                });
+            }
         });
 
-        function displayPropertyDetails(propertyId) {
-            const property = InnStay.getPropertyDetails(propertyId);
+        async function displayPropertyDetails(propertyId) {
+            if (typeof HotelAPI === 'undefined') {
+                window.location.href = '../index.html';
+                return;
+            }
+            const property = await HotelAPI.getHotel(propertyId);
             if (!property) {
                 window.location.href = '../index.html';
                 return;
@@ -175,19 +195,34 @@
             document.getElementById('guests').textContent = `${property.guests} guests`;
 
             // Images
+            const fallbackImage = typeof HotelAPI !== 'undefined' ? HotelAPI.placeholderImage : '';
+            const safeImages = (property.images || []).map(img =>
+                typeof HotelAPI !== 'undefined' ? HotelAPI.getSafeImageUrl(img) : img
+            );
             const mainImage = document.getElementById('mainImage');
-            mainImage.src = property.images[0];
+            mainImage.src = safeImages[0] || fallbackImage;
+            mainImage.setAttribute('data-fallback', fallbackImage);
 
             const thumbnails = document.getElementById('thumbnails');
-            thumbnails.innerHTML = property.images.map((img, idx) => `
-                <div class="thumbnail-item ${idx === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)">
-                    <img src="${img}" alt="Photo ${idx + 1}">
+            thumbnails.innerHTML = safeImages.map((img, idx) => `
+                <div class="thumbnail-item ${idx === 0 ? 'active' : ''}" data-image="${img}">
+                    <img src="${img}" data-fallback="${fallbackImage}" alt="Photo ${idx + 1}">
                 </div>
             `).join('');
+            attachImageFallbacks();
+
+            thumbnails.addEventListener('click', (event) => {
+                const item = event.target.closest('.thumbnail-item');
+                if (!item) {
+                    return;
+                }
+                changeMainImage(item.dataset.image, item);
+            });
 
             // Amenities
             const amenitiesList = document.getElementById('amenitiesList');
-            amenitiesList.innerHTML = property.amenities.map(amenity => `
+            const amenities = property.amenities || [];
+            amenitiesList.innerHTML = amenities.map(amenity => `
                 <div class="amenity-item">
                     <i class="fas fa-check"></i>
                     <span>${amenity}</span>
@@ -195,7 +230,16 @@
             `).join('');
 
             // Host
-            const host = property.host;
+            const host = property.host || {
+                name: 'InnStay Host',
+                years: 3,
+                rating: property.rating || 4.5,
+                reviews: property.reviews || 0,
+                photo: fallbackImage,
+                superhost: false,
+                responseTime: '2 hours',
+                responseRate: '95%'
+            };
             document.getElementById('hostPhoto').src = host.photo;
             document.getElementById('hostName').textContent = host.name;
             document.getElementById('hostBadge').textContent = host.superhost ? '⭐ Superhost' : `Host for ${host.years} year${host.years !== 1 ? 's' : ''}`;
@@ -204,7 +248,14 @@
 
             // Ratings
             const ratingsList = document.getElementById('ratingsList');
-            const breakdown = property.ratingBreakdown;
+            const breakdown = property.ratingBreakdown || {
+                cleanliness: property.rating || 4.5,
+                accuracy: property.rating || 4.5,
+                checkin: property.rating || 4.5,
+                communication: property.rating || 4.5,
+                location: property.rating || 4.5,
+                value: property.rating || 4.5
+            };
             const maxRating = 5;
             ratingsList.innerHTML = Object.entries(breakdown).map(([key, value]) => `
                 <div class="rating-item">
@@ -218,7 +269,8 @@
 
             // Reviews
             const reviewsList = document.getElementById('reviewsList');
-            reviewsList.innerHTML = property.reviews_data.map(review => `
+            const reviews = property.reviews_data || [];
+            reviewsList.innerHTML = reviews.map(review => `
                 <div class="review-card">
                     <div class="review-header">
                         <span class="reviewer-name">${review.reviewer}</span>
@@ -236,9 +288,22 @@
         }
 
         function changeMainImage(src, thumbnail) {
-            document.getElementById('mainImage').src = src;
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = src;
             document.querySelectorAll('.thumbnail-item').forEach(item => item.classList.remove('active'));
             thumbnail.classList.add('active');
+        }
+
+        function attachImageFallbacks() {
+            document.querySelectorAll('img[data-fallback]').forEach(img => {
+                if (img.dataset.bound === 'true') {
+                    return;
+                }
+                img.dataset.bound = 'true';
+                img.addEventListener('error', () => {
+                    img.src = img.dataset.fallback;
+                });
+            });
         }
     </script>
 </body>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Reviews</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="reviews">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Reviews</h1>
+                <p>Moderate guest feedback and flag quality issues.</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search reviews by hotel or guest">
+                <select>
+                    <option>Rating: All</option>
+                    <option>5 Stars</option>
+                    <option>4 Stars</option>
+                    <option>3 Stars</option>
+                    <option>2 Stars</option>
+                    <option>1 Star</option>
+                </select>
+            </div>
+
+            <div class="review-list">
+                <div class="review-item">
+                    <h4>Harbor View Suites</h4>
+                    <p>"Loved the view and the staff was very helpful."
+                    </p>
+                    <div class="badge badge-success">5 Stars</div>
+                </div>
+                <div class="review-item">
+                    <h4>Skyline Loft</h4>
+                    <p>"Clean and modern, but the check-in was delayed."
+                    </p>
+                    <div class="badge badge-warning">4 Stars</div>
+                </div>
+                <div class="review-item">
+                    <h4>Garden Retreat</h4>
+                    <p>"The location was great, but the wifi was spotty."
+                    </p>
+                    <div class="badge badge-info">3 Stars</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+</body>
+</html>

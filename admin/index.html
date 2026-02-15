@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="dashboard">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Track performance and manage the InnStay platform.</p>
+            </div>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Bookings</h3>
+                    <div class="number">2,384</div>
+                    <div class="trend">+12% this week</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Hotels</h3>
+                    <div class="number">184</div>
+                    <div class="trend">+8 new listings</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Revenue</h3>
+                    <div class="number">$54.2k</div>
+                    <div class="trend">+6% month over month</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Rating</h3>
+                    <div class="number">4.7</div>
+                    <div class="trend">Stable this month</div>
+                </div>
+            </section>
+
+            <section class="content-grid">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Recent Bookings</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-outline">View All</button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Guest</th>
+                                <th>Hotel</th>
+                                <th>Dates</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Emma Johnson</td>
+                                <td>Harbor View Suites</td>
+                                <td>Feb 20 - Feb 24</td>
+                                <td><span class="badge badge-success">Confirmed</span></td>
+                            </tr>
+                            <tr>
+                                <td>Michael Lee</td>
+                                <td>Skyline Loft</td>
+                                <td>Feb 18 - Feb 22</td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Patel</td>
+                                <td>Garden Retreat</td>
+                                <td>Feb 27 - Mar 2</td>
+                                <td><span class="badge badge-success">Confirmed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search listings">
+                    </div>
+                    <div class="form-grid">
+                        <button class="btn btn-primary">Add Hotel</button>
+                        <button class="btn btn-secondary">Invite Manager</button>
+                        <button class="btn btn-outline">Export Report</button>
+                        <button class="btn btn-outline">System Logs</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+</body>
+</html>

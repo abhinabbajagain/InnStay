@@ -6,8 +6,7 @@
 const InnStay = {
     // Configuration
     config: {
-        apiUrl: 'http://localhost:5000/api',
-        useLocalData: false, // Set to true to use hardcoded data instead of API
+        apiUrl: 'http://localhost:5000/api'
     },
 
     /**
@@ -17,6 +16,7 @@ const InnStay = {
         console.log('InnStay initialized');
         this.setupEventListeners();
         this.setupScrollListener();
+        this.updateAuthUI();
         this.loadPopularHotels();
         this.setupMinimumDates();
     },
@@ -760,150 +760,60 @@ const InnStay = {
      * Load popular hotels
      */
     loadPopularHotels() {
-        if (!this.config.useLocalData) {
-            this.fetchHotelsFromAPI();
-        } else {
-            this.loadLocalHotels();
-        }
+        this.loadHotelsFromDatabase();
     },
 
     /**
-     * Fetch hotels from API
+     * Load hotels from the database API
      */
-    fetchHotelsFromAPI() {
-        fetch(`${this.config.apiUrl}/hotels?limit=6`)
-            .then(response => {
-                if (!response.ok) throw new Error('API request failed');
-                return response.json();
-            })
-            .then(data => {
-                const hotels = data.hotels || [];
-                const mappedHotels = hotels.map((h, idx) => ({
-                    id: h.id || idx + 1,
-                    name: h.title || h.name || 'Hotel',
-                    location: h.location || 'Location',
-                    price: h.price || 100,
-                    rating: h.rating || 4.5,
-                    reviews: h.reviews || 100,
-                    image: h.image || h.photo_url || 'https://via.placeholder.com/280x260',
-                    isFavorite:false,
-                    isGuestFavorite: Math.random() > 0.5
-                }));
-                
-                const container = document.getElementById('popularHotels');
-                if (container) {
-                    container.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
-                    this.attachCardListeners();
-                }
-                const container2 = document.getElementById('nextMonthHotels');
-                if (container2) {
-                    container2.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
-                    this.attachCardListeners();
-                }
-                const container3 = document.getElementById('tokyoHotels');
-                if (container3) {
-                    container3.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
-                    this.attachCardListeners();
-                }
-                console.log('Hotels loaded from API:', mappedHotels.length);
-            })
-            .catch(error => {
-                console.warn('API error, falling back to local data:', error);
-                this.loadLocalHotels();
-            });
-    },
+    async loadHotelsFromDatabase() {
+        try {
+            const hotels = typeof HotelAPI !== 'undefined'
+                ? await HotelAPI.listHotels({ limit: 6 })
+                : [];
+            const mappedHotels = hotels.map(hotel => ({
+                ...hotel,
+                name: hotel.name || hotel.title,
+                isFavorite: false,
+                isGuestFavorite: Number(hotel.rating) >= 4.8
+            }));
 
-    /**
-     * Load local hotels (fallback)
-     */
-    loadLocalHotels() {
-        const hotels = [
-            {
-                id: 1,
-                name: 'Charming Downtown Loft',
-                location: 'Lower Manhattan, New York, NY',
-                price: 185,
-                rating: 4.86,
-                reviews: 218,
-                image: 'https://images.unsplash.com/photo-1631049307038-da31e36f2d5c?w=500',
-                isFavorite: false,
-                isGuestFavorite: true
-            },
-            {
-                id: 2,
-                name: 'Modern City Center Suite',
-                location: 'Midtown Manhattan, New York, NY',
-                price: 215,
-                rating: 4.94,
-                reviews: 289,
-                image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500',
-                isFavorite: false,
-                isGuestFavorite: true
-            },
-            {
-                id: 3,
-                name: 'Cozy Studio with Rooftop',
-                location: 'Upper West Side, New York, NY',
-                price: 145,
-                rating: 4.78,
-                reviews: 156,
-                image: 'https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=500',
-                isFavorite: false,
-                isGuestFavorite: false
-            },
-            {
-                id: 4,
-                name: 'Luxury 3-Bedroom Brownstone',
-                location: 'Brooklyn Heights, New York, NY',
-                price: 325,
-                rating: 4.95,
-                reviews: 342,
-                image: 'https://images.unsplash.com/photo-1614008375896-cb53fc677b86?w=500',
-                isFavorite: false,
-                isGuestFavorite: true
-            },
-            {
-                id: 5,
-                name: 'Trendy SoHo Loft',
-                location: 'SoHo, New York, NY',
-                price: 275,
-                rating: 4.85,
-                reviews: 201,
-                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
-                isFavorite: false,
-                isGuestFavorite: false
-            },
-            {
-                id: 6,
-                name: 'Stunning Manhattan Penthouse',
-                location: 'Tribeca, New York, NY',
-                price: 450,
-                rating: 5.0,
-                reviews: 183,
-                image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500',
-                isFavorite: false,
-                isGuestFavorite: true
+            const container = document.getElementById('popularHotels');
+            if (container) {
+                container.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                this.attachCardListeners();
+                this.attachImageFallbacks();
             }
-        ];
 
-        const container = document.getElementById('popularHotels');
-        if (container) {
-            container.innerHTML = hotels.map(hotel => this.createPropertyCard(hotel)).join('');
-            this.attachCardListeners();
-        }
+            const container2 = document.getElementById('nextMonthHotels');
+            if (container2) {
+                container2.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                this.attachCardListeners();
+                this.attachImageFallbacks();
+            }
 
-        const container2 = document.getElementById('nextMonthHotels');
-        if (container2) {
-            container2.innerHTML = hotels.map(hotel => this.createPropertyCard(hotel)).join('');
-            this.attachCardListeners();
+            const container3 = document.getElementById('tokyoHotels');
+            if (container3) {
+                container3.innerHTML = mappedHotels.map(hotel => this.createPropertyCard(hotel)).join('');
+                this.attachCardListeners();
+                this.attachImageFallbacks();
+            }
+        } catch (error) {
+            console.warn('Failed to load hotels from database:', error);
         }
+    },
 
-        const container3 = document.getElementById('tokyoHotels');
-        if (container3) {
-            container3.innerHTML = hotels.map(hotel => this.createPropertyCard(hotel)).join('');
-            this.attachCardListeners();
+    /**
+     * Create star rating HTML
+     */
+    createStarRating(rating) {
+        const stars = [];
+        const fullStars = Math.floor(rating);
+        for (let i = 0; i < 5; i++) {
+            const iconClass = i < fullStars ? 'fas' : 'far';
+            stars.push(`<i class="${iconClass} fa-star star"></i>`);
         }
-        console.log('Using local hotel data');
+        return stars.join('');
     },
 
     /**
@@ -912,11 +822,15 @@ const InnStay = {
     createPropertyCard(hotel) {
         const stars = '★'.repeat(Math.floor(hotel.rating));
         const starHTML = `<span class="stars">${stars}</span>`;
+        const fallback = typeof HotelAPI !== 'undefined' ? HotelAPI.placeholderImage : '';
+        const image = typeof HotelAPI !== 'undefined'
+            ? HotelAPI.getSafeImageUrl(hotel.image)
+            : hotel.image;
         
         return `
             <div class="property-card" data-hotel-id="${hotel.id}">
                 <div class="property-image-wrapper">
-                    <img src="${hotel.image}" alt="${hotel.name}" class="property-image">
+                    <img src="${image}" data-fallback="${fallback}" alt="${hotel.name}" class="property-image">
                     ${hotel.isGuestFavorite ? `<div class="property-badge-top-left">Guest favorite</div>` : ''}
                     <div class="property-badge-top-right" data-favorite-btn>
                         <i class="far fa-heart ${hotel.isFavorite ? 'favorited' : ''}"></i>
@@ -964,6 +878,79 @@ const InnStay = {
     },
 
     /**
+     * Attach fallback handlers for broken images
+     */
+    attachImageFallbacks() {
+        document.querySelectorAll('img[data-fallback]').forEach(img => {
+            if (img.dataset.bound === 'true') {
+                return;
+            }
+            img.dataset.bound = 'true';
+            img.addEventListener('error', () => {
+                img.src = img.dataset.fallback;
+            });
+        });
+    },
+
+    /**
+     * Update auth links in the navigation menu
+     */
+    updateAuthUI() {
+        if (typeof Utils === 'undefined') {
+            return;
+        }
+
+        const user = Utils.getFromStorage('currentUser');
+        const loginLinks = document.querySelectorAll('[data-auth="login"]');
+        const registerLinks = document.querySelectorAll('[data-auth="register"]');
+        const accountLinks = document.querySelectorAll('[data-auth="account"]');
+        const logoutLinks = document.querySelectorAll('[data-auth="logout"]');
+
+        const setHidden = (element, hidden) => {
+            if (!element) {
+                return;
+            }
+            element.hidden = hidden;
+            const container = element.closest('li');
+            if (container && container.hasAttribute('hidden')) {
+                container.hidden = hidden;
+            }
+        };
+
+        if (user) {
+            loginLinks.forEach(link => setHidden(link, true));
+            registerLinks.forEach(link => setHidden(link, true));
+            accountLinks.forEach(link => {
+                setHidden(link, false);
+                const label = link.querySelector('span');
+                const text = user.name ? `Hi, ${user.name}` : 'My Account';
+                if (label) {
+                    label.textContent = text;
+                } else {
+                    link.textContent = text;
+                }
+            });
+            logoutLinks.forEach(link => {
+                setHidden(link, false);
+                if (!link.dataset.bound) {
+                    link.dataset.bound = 'true';
+                    link.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        Utils.removeFromStorage('currentUser');
+                        Utils.removeFromStorage('rememberEmail');
+                        this.updateAuthUI();
+                    });
+                }
+            });
+        } else {
+            loginLinks.forEach(link => setHidden(link, false));
+            registerLinks.forEach(link => setHidden(link, false));
+            accountLinks.forEach(link => setHidden(link, true));
+            logoutLinks.forEach(link => setHidden(link, true));
+        }
+    },
+
+    /**
      * Handle search form submission
      */
     handleSearch(e) {
@@ -1001,329 +988,24 @@ const InnStay = {
     /**
      * Get comprehensive property details
      */
-    getPropertyDetails(id) {
-        const propertiesDB = {
-            1: {
-                id: 1,
-                title: 'Charming Downtown Loft',
-                location: 'Lower Manhattan, New York, NY',
-                price: 185,
-                rating: 4.86,
-                reviews: 218,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733250/original/1e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733250/original/2e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733250/original/3e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733250/original/4e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733250/original/5e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Beautiful loft in the heart of downtown Manhattan. Exposed brick, high ceilings, and plenty of natural light. Perfect for couples or solo travelers. Located near great restaurants, bars, and shopping.',
-                bedrooms: 1,
-                beds: 1,
-                bathrooms: 1,
-                guests: 2,
-                amenities: ['WiFi', 'Air conditioning', 'Heating', 'Kitchen', 'Refrigerator', 'Dishwasher', 'Oven', 'Stove', 'Microwave', 'Washer', 'Dryer', 'TV', 'Iron'],
-                host: {
-                    name: 'Marcus',
-                    years: 3,
-                    rating: 4.88,
-                    reviews: 218,
-                    photo: 'https://a0.muscache.com/im/pictures/user/8a8d4d6a-0a15-4a4a-8b0f-0f0f0f0f0f0f/original/user-0.jpg',
-                    superhost: true,
-                    responseTime: '1 hour',
-                    responseRate: '100%'
-                },
-                cancellation: 'Free cancellation before April 12',
-                checkIn: '4pm',
-                checkOut: '11am',
-                reviews_data: [
-                    { reviewer: 'Sarah', date: 'January 2026', rating: 5, text: 'Amazing loft with perfect location! Marcus was very helpful.' },
-                    { reviewer: 'John', date: 'December 2025', rating: 5, text: 'Beautiful space, clean, and great for exploring the city.' },
-                    { reviewer: 'Emma', date: 'November 2025', rating: 4, text: 'Great location, only wish the kitchen was bigger.' }
-                ],
-                ratingBreakdown: { cleanliness: 4.9, accuracy: 4.9, checkin: 5.0, communication: 5.0, location: 4.9, value: 4.8 }
-            },
-            2: {
-                id: 2,
-                title: 'Modern City Center Suite',
-                location: 'Midtown, New York, NY',
-                price: 215,
-                rating: 4.94,
-                reviews: 289,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733251/original/2e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733251/original/3e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733251/original/4e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733251/original/5e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733251/original/6e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Elegant modern suite in the heart of Midtown Manhattan. Floor-to-ceiling windows with city views. Contemporary furnishings and all modern amenities. Walking distance to Times Square, Central Park, and major attractions.',
-                bedrooms: 1,
-                beds: 1,
-                bathrooms: 1,
-                guests: 2,
-                amenities: ['WiFi', 'Air conditioning', 'Heating', 'Kitchen', 'Washer/Dryer', 'TV', 'Dishwasher', 'Oven', 'Microwave', 'Iron', 'Hair dryer', 'Crib'],
-                host: {
-                    name: 'Alexandra',
-                    years: 5,
-                    rating: 4.92,
-                    reviews: 289,
-                    photo: 'https://a0.muscache.com/im/pictures/user/9b9e5e7b-1b26-5b5b-9c1g-1g1g1g1g1g1g/original/user-1.jpg',
-                    superhost: true,
-                    responseTime: '30 minutes',
-                    responseRate: '100%'
-                },
-                cancellation: 'Moderate cancellation: Free until 5 days before',
-                checkIn: '3pm',
-                checkOut: '11am',
-                reviews_data: [
-                    { reviewer: 'David', date: 'January 2026', rating: 5, text: 'Fantastic location and amazing host! Would definitely stay again.' },
-                    { reviewer: 'Lisa', date: 'December 2025', rating: 5, text: 'Beautiful modern apartment with stunning city views.' },
-                    { reviewer: 'Michael', date: 'November 2025', rating: 5, text: 'Perfect for a business trip or vacation. Everything is perfect!' }
-                ],
-                ratingBreakdown: { cleanliness: 5.0, accuracy: 4.9, checkin: 4.9, communication: 5.0, location: 5.0, value: 4.9 }
-            },
-            3: {
-                id: 3,
-                title: 'Cozy Studio with Rooftop',
-                location: 'Upper West Side, New York, NY',
-                price: 145,
-                rating: 4.78,
-                reviews: 156,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733252/original/3e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733252/original/4e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733252/original/5e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733252/original/6e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Bright and airy studio with access to a shared rooftop terrace. Great natural light and modern furnishings. Perfect for solo travelers or couples. Near Central Park and museums.',
-                bedrooms: 0,
-                beds: 1,
-                bathrooms: 1,
-                guests: 1,
-                amenities: ['WiFi', 'Air conditioning', 'Heating', 'Kitchen', 'Refrigerator', 'Microwave', 'TV', 'Washer', 'Iron', 'Desk', 'Rooftop access'],
-                host: {
-                    name: 'James',
-                    years: 2,
-                    rating: 4.75,
-                    reviews: 156,
-                    photo: 'https://a0.muscache.com/im/pictures/user/7c7f4c5a-0c37-6c6c-8d0h-2h2h2h2h2h2h/original/user-2.jpg',
-                    superhost: false,
-                    responseTime: '2 hours',
-                    responseRate: '98%'
-                },
-                cancellation: 'Strict: Free until 1 day before',
-                checkIn: '4pm',
-                checkOut: '10am',
-                reviews_data: [
-                    { reviewer: 'Sophie', date: 'January 2026', rating: 5, text: 'Loved the rooftop access! Great value for money.' },
-                    { reviewer: 'Lucas', date: 'December 2025', rating: 4, text: 'Nice studio, good location, a bit small.' }
-                ],
-                ratingBreakdown: { cleanliness: 4.8, accuracy: 4.7, checkin: 4.6, communication: 4.8, location: 4.9, value: 4.8 }
-            },
-            4: {
-                id: 4,
-                title: 'Luxury 3-Bedroom Brownstone',
-                location: 'Brooklyn Heights, Brooklyn, NY',
-                price: 325,
-                rating: 4.95,
-                reviews: 342,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733253/original/4e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733253/original/5e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733253/original/6e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733253/original/7e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733253/original/8e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Stunning 3-bedroom brownstone in the heart of Brooklyn Heights. Original hardwood floors, high ceilings, and gorgeous natural light. Beautiful garden access. Perfect for families or groups.',
-                bedrooms: 3,
-                beds: 4,
-                bathrooms: 2,
-                guests: 6,
-                amenities: ['WiFi', 'Kitchen', 'Washer/Dryer', 'Air conditioning', 'Heating', 'Dishwasher', 'Oven', 'Refrigerator', 'TV', 'Iron', 'Crib', 'Garden', 'Parking'],
-                host: {
-                    name: 'Patricia',
-                    years: 8,
-                    rating: 4.96,
-                    reviews: 342,
-                    photo: 'https://a0.muscache.com/im/pictures/user/5a5d3d4a-2d48-7d7d-9e1i-3i3i3i3i3i3i/original/user-3.jpg',
-                    superhost: true,
-                    responseTime: '1 hour',
-                    responseRate: '100%'
-                },
-                cancellation: 'Moderate: Free until 5 days before',
-                checkIn: '3pm',
-                checkOut: '11am',
-                reviews_data: [
-                    { reviewer: 'Robert', date: 'January 2026', rating: 5, text: 'Absolutely gorgeous brownstone! Patricia is amazing.' },
-                    { reviewer: 'Jennifer', date: 'December 2025', rating: 5, text: 'Perfect for our family vacation! Highly recommended.' },
-                    { reviewer: 'William', date: 'November 2025', rating: 5, text: 'Beautiful place with great amenities and host.' }
-                ],
-                ratingBreakdown: { cleanliness: 5.0, accuracy: 4.9, checkin: 5.0, communication: 5.0, location: 4.9, value: 4.9 }
-            },
-            5: {
-                id: 5,
-                title: 'Trendy SoHo Loft',
-                location: 'SoHo, New York, NY',
-                price: 275,
-                rating: 4.85,
-                reviews: 201,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733254/original/5e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733254/original/6e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733254/original/7e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733254/original/8e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Chic and stylish loft in trendy SoHo. Industrial aesthetic with modern comforts. Great location near boutiques, galleries, and restaurants. Perfect for exploring downtown.',
-                bedrooms: 2,
-                beds: 2,
-                bathrooms: 1,
-                guests: 4,
-                amenities: ['WiFi', 'Air conditioning', 'Heating', 'Kitchen', 'Washer/Dryer', 'TV', 'Dishwasher', 'Iron', 'Desk', 'Work space'],
-                host: {
-                    name: 'Victoria',
-                    years: 4,
-                    rating: 4.86,
-                    reviews: 201,
-                    photo: 'https://a0.muscache.com/im/pictures/user/8c8f5d6b-3e49-8e8e-9f2j-4j4j4j4j4j4j/original/user-4.jpg',
-                    superhost: true,
-                    responseTime: '45 minutes',
-                    responseRate: '100%'
-                },
-                cancellation: 'Flexible: Free until 1 day before',
-                checkIn: '4pm',
-                checkOut: '11am',
-                reviews_data: [
-                    { reviewer: 'Nicole', date: 'January 2026', rating: 5, text: 'Amazing loft in the perfect location! Victoria is great.' },
-                    { reviewer: 'Andrew', date: 'December 2025', rating: 5, text: 'Love the vibe of this place. Great SoHo experience.' }
-                ],
-                ratingBreakdown: { cleanliness: 4.9, accuracy: 4.8, checkin: 4.9, communication: 4.9, location: 5.0, value: 4.7 }
-            },
-            6: {
-                id: 6,
-                title: 'Stunning Manhattan Penthouse',
-                location: 'Tribeca, New York, NY',
-                price: 450,
-                rating: 5.0,
-                reviews: 183,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733255/original/6e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733255/original/7e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733255/original/8e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733255/original/9e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733255/original/10e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Breathtaking penthouse with panoramic city views. Luxurious finishes, top-of-the-line appliances, and spacious terrace. Perfect for luxury travelers and special occasions.',
-                bedrooms: 3,
-                beds: 4,
-                bathrooms: 3,
-                guests: 8,
-                amenities: ['WiFi', 'Kitchen', 'Washer/Dryer', 'Air conditioning', 'Heating', 'Dishwasher', 'Oven', 'Refrigerator', 'TV', 'Home theater', 'Gym equipment', 'Terrace', '24-hour security'],
-                host: {
-                    name: 'Richard',
-                    years: 10,
-                    rating: 5.0,
-                    reviews: 183,
-                    photo: 'https://a0.muscache.com/im/pictures/user/9d9g6e7c-4f50-9f9f-0g3k-5k5k5k5k5k5k/original/user-5.jpg',
-                    superhost: true,
-                    responseTime: 'Within 15 minutes',
-                    responseRate: '100%'
-                },
-                cancellation: 'Moderate: Free until 3 days before',
-                checkIn: '4pm',
-                checkOut: '11am',
-                reviews_data: [
-                    { reviewer: 'Catherine', date: 'January 2026', rating: 5, text: 'Unforgettable experience! The penthouse is absolutely stunning.' },
-                    { reviewer: 'Thomas', date: 'December 2025', rating: 5, text: 'Luxury at its finest. Highly recommend for a special trip.' }
-                ],
-                ratingBreakdown: { cleanliness: 5.0, accuracy: 5.0, checkin: 5.0, communication: 5.0, location: 5.0, value: 5.0 }
-            },
-            7: {
-                id: 7,
-                title: 'Charming Brooklyn Heights Cottage',
-                location: 'Brooklyn, NY',
-                price: 195,
-                rating: 4.82,
-                reviews: 167,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733256/original/7e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733256/original/8e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733256/original/9e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733256/original/10e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Charming cottage in peaceful Brooklyn neighborhood. Quiet tree-lined street, private yard, and local charm. Perfect for those seeking a residential feel while staying close to the city.',
-                bedrooms: 2,
-                beds: 2,
-                bathrooms: 1,
-                guests: 4,
-                amenities: ['WiFi', 'Kitchen', 'Washer/Dryer', 'Air conditioning', 'Heating', 'Garden', 'Patio', 'TV', 'Iron', 'Dishwasher'],
-                host: {
-                    name: 'Susan',
-                    years: 6,
-                    rating: 4.81,
-                    reviews: 167,
-                    photo: 'https://a0.muscache.com/im/pictures/user/7e7h6f8d-5g51-0g0g-1h4l-6l6l6l6l6l6l/original/user-6.jpg',
-                    superhost: true,
-                    responseTime: '1 hour',
-                    responseRate: '99%'
-                },
-                cancellation: 'Moderate: Free until 5 days before',
-                checkIn: '3pm',
-                checkOut: '10am',
-                reviews_data: [
-                    { reviewer: 'Margaret', date: 'January 2026', rating: 5, text: 'Lovely cottage with great hosts! Such a peaceful place.' },
-                    { reviewer: 'George', date: 'December 2025', rating: 5, text: 'Perfect Brooklyn escape. Highly recommended.' }
-                ],
-                ratingBreakdown: { cleanliness: 4.8, accuracy: 4.8, checkin: 4.8, communication: 4.9, location: 4.8, value: 4.8 }
-            },
-            8: {
-                id: 8,
-                title: 'Budget-Friendly East Village Studio',
-                location: 'East Village, New York, NY',
-                price: 125,
-                rating: 4.60,
-                reviews: 145,
-                images: [
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733257/original/8e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733257/original/9e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733257/original/10e88ede8-659c-45d0-9905-127900ddf9d9.jpeg',
-                    'https://a0.muscache.com/im/pictures/miso/Hosting-733257/original/11e88ede8-659c-45d0-9905-127900ddf9d9.jpeg'
-                ],
-                description: 'Affordable studio in the vibrant East Village neighborhood. Close to great bars, restaurants, and music venues. Perfect for budget-conscious travelers who want to experience the city.',
-                bedrooms: 0,
-                beds: 1,
-                bathrooms: 1,
-                guests: 1,
-                amenities: ['WiFi', 'Air conditioning', 'Kitchen', 'Refrigerator', 'Microwave', 'TV', 'Iron', 'Desk'],
-                host: {
-                    name: 'Kevin',
-                    years: 3,
-                    rating: 4.58,
-                    reviews: 145,
-                    photo: 'https://a0.muscache.com/im/pictures/user/8f8i7g9e-6h52-1h1h-2i5m-7m7m7m7m7m7m/original/user-7.jpg',
-                    superhost: false,
-                    responseTime: '2-3 hours',
-                    responseRate: '95%'
-                },
-                cancellation: 'Strict: Free until 2 days before',
-                checkIn: '4pm',
-                checkOut: '10am',
-                reviews_data: [
-                    { reviewer: 'Rachel', date: 'January 2026', rating: 4, text: 'Great value for NYC! Location is fantastic.' },
-                    { reviewer: 'Brian', date: 'December 2025', rating: 5, text: 'Best budget option in the East Village!' }
-                ],
-                ratingBreakdown: { cleanliness: 4.6, accuracy: 4.5, checkin: 4.6, communication: 4.7, location: 4.7, value: 4.6 }
-            }
-        };
-        
-        return propertiesDB[id];
+    async getPropertyDetails(id) {
+        if (typeof HotelAPI === 'undefined') {
+            return null;
+        }
+
+        try {
+            return await HotelAPI.getHotel(id);
+        } catch (error) {
+            console.warn('Failed to fetch hotel details:', error);
+            return null;
+        }
     },
 
     /**
      * Show property details modal
      */
-    showPropertyDetails(propertyId) {
-        const property = this.getPropertyDetails(propertyId);
+    async showPropertyDetails(propertyId) {
+        const property = await this.getPropertyDetails(propertyId);
         if (!property) return;
         
         const modal = document.getElementById('propertyDetailsModal');

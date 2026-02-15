@@ -138,6 +138,8 @@
     font-size: 0.9rem;
 }
 
+.form-group input[type="email"],
+.form-group input[type="password"],
 .form-group input[type="tel"],
 .form-group input[type="text"],
 .form-group select {
@@ -155,6 +157,82 @@
     border-color: var(--dark-color);
     box-shadow: 0 0 0 3px rgba(72, 72, 72, 0.05);
     outline: none;
+}
+
+.input-group {
+    display: flex;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    font-size: 0.95rem;
+    background: transparent;
+}
+
+.input-group input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.password-toggle {
+    border: none;
+    background-color: transparent;
+    padding: 0 12px;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: var(--dark-color);
+}
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 20px;
+    font-size: 0.85rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.remember-me input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.forgot-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.auth-error {
+    display: none;
+    background: #fdeaea;
+    color: #b91c1c;
+    border: 1px solid #f4b4b4;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
 }
 
 /* Country Select */

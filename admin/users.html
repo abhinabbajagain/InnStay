@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InnStay Admin - Users</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body data-page="users">
+    <div class="admin-layout">
+        <div id="adminSidebar"></div>
+        <div id="adminHeader"></div>
+
+        <main class="admin-main">
+            <div class="page-title">
+                <h1>Users</h1>
+                <p>Manage guest and host accounts across the platform.</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search users by name or email">
+                <select>
+                    <option>Role: All</option>
+                    <option>Guest</option>
+                    <option>Host</option>
+                    <option>Admin</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>User Directory</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-secondary"><i class="fa-solid fa-download"></i> Export</button>
+                        <button class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add User</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Emma Johnson</td>
+                            <td>emma@innstay.com</td>
+                            <td>Guest</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>Jan 05, 2026</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline">View</button>
+                                <button class="btn btn-sm btn-danger">Disable</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Michael Lee</td>
+                            <td>michael@innstay.com</td>
+                            <td>Host</td>
+                            <td><span class="badge badge-info">Verified</span></td>
+                            <td>Dec 20, 2025</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline">View</button>
+                                <button class="btn btn-sm btn-secondary">Message</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Patel</td>
+                            <td>sarah@innstay.com</td>
+                            <td>Host</td>
+                            <td><span class="badge badge-warning">Review</span></td>
+                            <td>Jan 22, 2026</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline">Review</button>
+                                <button class="btn btn-sm btn-danger">Suspend</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-nav.js"></script>
+</body>
+</html>
