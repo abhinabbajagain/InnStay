@@ -314,7 +314,7 @@ This project is for educational purposes.
 
 ## 👨‍💻 Author
 
-**Abhinab Baja**  
+**Abhinab Bajagain**  
 Repository: [github.com/abhinabbajagain/InnStay](https://github.com/abhinabbajagain/InnStay)
 
 ---
