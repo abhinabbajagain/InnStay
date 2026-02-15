@@ -1,168 +1,331 @@
 # InnStay - Hotel Booking System
 
-A modern, responsive hotel booking platform built with Flask, MySQL, and Bootstrap.
+A modern hotel booking system with MySQL backend, JWT authentication, and admin panel.
 
-## Features
+## 🚀 Quick Start Guide
 
-### Core Features
-- ✅ User Registration & Authentication
-- ✅ Hotel Search & Advanced Filtering
-- ✅ Room Booking System
-- ✅ User Dashboard
-- ✅ Admin Panel
-- ✅ Booking History & Management
-- ✅ Hotel & Room Reviews
-- ✅ Responsive Design (Mobile, Tablet, Desktop)
+### Prerequisites
 
-### Advanced Features
-- 🚀 Email Notifications (Booking Confirmations)
-- 🚀 File Upload (Hotel Images)
-- 🚀 Payment Gateway Integration
-- 🚀 User Roles & Permissions
+Before you begin, ensure you have the following installed:
 
-## Tech Stack
+- **Python 3.11+** - [Download Python](https://www.python.org/downloads/)
+- **MySQL Server 8.0+** - [Download MySQL](https://dev.mysql.com/downloads/mysql/)
+- **MySQL Workbench** (optional but recommended) - [Download Workbench](https://dev.mysql.com/downloads/workbench/)
+- **Git** - [Download Git](https://git-scm.com/downloads)
+- **Modern Web Browser** (Chrome, Firefox, Edge, etc.)
 
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap/Tailwind
-- **Backend**: Python 3.x, Flask
-- **Database**: MySQL
-- **Version Control**: Git
+---
 
-## Project Structure
+## 📦 Installation Steps
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/abhinabbajagain/InnStay.git
+cd InnStay
+```
+
+### 2. Set Up Python Virtual Environment
+
+**Windows (PowerShell):**
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**Windows (Command Prompt):**
+```cmd
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
+**macOS/Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Python Dependencies
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+### 4. Configure Database
+
+#### Option A: Using MySQL Workbench (Recommended)
+
+1. Open **MySQL Workbench**
+2. Connect to your local MySQL server
+3. Go to **File → Run SQL Script**
+4. Select: `database/schema.sql`
+5. Click **Run**
+
+#### Option B: Using Command Line
+
+**Windows:**
+```powershell
+# Replace path with your MySQL installation path
+& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p < database/schema.sql
+```
+
+**macOS/Linux:**
+```bash
+mysql -u root -p < database/schema.sql
+```
+
+### 5. Configure Backend Environment
+
+Create a `.env` file in the `backend` folder:
+
+```bash
+cd backend
+cp .env.example .env
+```
+
+Edit `backend/.env` with your MySQL credentials:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=innstay_db
+DB_PORT=3306
+JWT_SECRET=innstay_secret_key_2026_change_in_production
+JWT_EXPIRY_HOURS=24
+UPLOAD_FOLDER=uploads
+```
+
+---
+
+## 🎯 Running the Application
+
+### Step 1: Start the Backend Server
+
+**From the project root directory:**
+
+```bash
+cd backend
+python app.py
+```
+
+You should see:
+```
+ * Running on http://127.0.0.1:5000
+ * Debug mode: on
+```
+
+**Keep this terminal window open!**
+
+### Step 2: Open the Website
+
+#### For Public Users:
+Open in your browser:
+```
+file:///D:/Assignment%203rd/Web%20Technology/InnStay/frontend/index.html
+```
+
+Or simply double-click: `frontend/index.html`
+
+#### For Admin Panel:
+Open in your browser:
+```
+file:///D:/Assignment%203rd/Web%20Technology/InnStay/admin/login.html
+```
+
+Or simply double-click: `admin/login.html`
+
+---
+
+## 🔐 Admin Login Credentials
+
+**Email:** `admin@gmail.com`  
+**Password:** `ADMIN123`
+
+⚠️ **This is the ONLY account with admin access!**
+
+---
+
+## 📂 Project Structure
 
 ```
 InnStay/
-├── frontend/           # HTML, CSS, JavaScript files
+├── frontend/               # Public-facing website
+│   ├── index.html         # Home page
+│   ├── pages/
+│   │   ├── login.html     # User login
+│   │   ├── register.html  # User registration
+│   │   ├── search.html    # Hotel search
+│   │   └── hotel-details.html
+│   ├── css/               # Stylesheets
+│   └── js/                # JavaScript files
+│       ├── main.js        # Main logic
+│       ├── auth.js        # Authentication
+│       ├── hotel-api.js   # API client
+│       └── utils.js       # Utilities
+│
+├── admin/                 # Admin panel
+│   ├── login.html         # Admin login
+│   ├── index.html         # Admin dashboard
+│   ├── hotels.html        # Hotel management
+│   ├── users.html         # User management
+│   ├── bookings.html      # Booking management
+│   ├── reviews.html       # Review management
 │   ├── css/
-│   ├── js/
-│   ├── images/
-│   └── pages/
-├── backend/           # Flask application
-│   ├── app.py
-│   ├── models/
-│   ├── routes/
-│   ├── templates/
-│   └── requirements.txt
-├── database/          # MySQL schemas & migrations
-│   └── schema.sql
-├── docs/              # Screenshots, testing docs
-│   ├── screenshots/
-│   ├── testing/
-│   └── deployment.md
-├── .gitignore
-└── README.md
+│   │   └── admin-style.css
+│   └── js/
+│       ├── admin-auth.js  # Admin authentication
+│       ├── admin-login.js # Admin login logic
+│       └── admin-hotels.js # Hotel CRUD
+│
+├── backend/               # Flask API server
+│   ├── app.py            # Main API application
+│   ├── requirements.txt  # Python dependencies
+│   ├── .env.example      # Environment template
+│   └── uploads/          # Uploaded images
+│
+└── database/
+    └── schema.sql        # MySQL database schema
 ```
 
-## Installation & Setup
+---
 
-### Quick Start (with API)
+## 🔧 Features
 
-**Windows:**
+### Public Features
+- 🏠 Browse hotels with beautiful UI
+- 🔍 Search and filter hotels
+- 🔐 User registration and login
+- 📱 Fully responsive design
+- ⭐ View hotel ratings and reviews
+- 🖼️ Hotel image galleries
+
+### Admin Features
+- 🔒 Secure JWT authentication
+- 🏨 Full hotel CRUD (Create, Read, Update, Delete)
+- 👥 User management
+- 📅 Booking management
+- 📝 Review management
+- 📊 Admin dashboard
+- 🖼️ Image upload support
+
+---
+
+## 🛠️ Troubleshooting
+
+### Backend won't start
+
+**Error: `ModuleNotFoundError`**
 ```bash
-.\setup.bat
+# Make sure virtual environment is activated
+pip install -r backend/requirements.txt
 ```
 
-**Linux/macOS:**
-```bash
-chmod +x setup.sh
-./setup.sh
-```
+**Error: `mysql.connector.errors.ProgrammingError`**
+- Check your `.env` file has correct MySQL credentials
+- Ensure MySQL server is running
+- Verify database exists: `SHOW DATABASES;`
 
-### Manual Setup
+### "Unable to sign in right now"
 
-**Prerequisites**
-- Python 3.7+
-- Git
-
-**Steps**
-
-1. Clone repository
-   ```bash
-   git clone https://github.com/abhinabbajagain/InnStay.git
-   cd InnStay
+1. Check Flask backend is running on `http://localhost:5000`
+2. Test health endpoint: `http://localhost:5000/api/health`
+3. Verify database has admin user:
+   ```sql
+   SELECT * FROM users WHERE email = 'admin@gmail.com';
    ```
 
-2. Install dependencies
+### "Can't save hotels"
+
+1. Ensure you're logged in as admin
+2. Check browser console for errors (F12)
+3. Verify JWT token is stored:
+   - Open DevTools (F12) → Application → Local Storage
+   - Check for `authToken`
+
+### Database connection failed
+
+1. Start MySQL service:
+   - **Windows:** Services → MySQL → Start
+   - **macOS:** `brew services start mysql`
+   - **Linux:** `sudo systemctl start mysql`
+
+2. Test connection:
    ```bash
-   cd backend
-   pip install -r requirements.txt
+   mysql -u root -p
    ```
 
-3. Configure API (optional but recommended)
-   - Get free Amadeus API credentials: https://developers.amadeus.com/
-   - Copy `.env.example` to `.env`
-   - Add your API credentials to `.env`
+---
 
-4. Start backend API server
-   ```bash
-   cd backend
-   python app.py
-   ```
-   Server runs at: `http://localhost:5000`
+## 🌐 API Endpoints
 
-5. Start frontend (in new terminal)
-   ```bash
-   cd frontend
-   python -m http.server 8000
-   ```
-   Access app at: `http://localhost:8000`
+### Public Endpoints
+- `GET /api/health` - Health check
+- `GET /api/hotels` - List all hotels
+- `GET /api/hotels/:id` - Get hotel details
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
 
-### Using Without API
+### Admin Endpoints (Requires JWT)
+- `GET /api/auth/me` - Get current user
+- `GET /api/admin/hotels` - List all hotels (admin)
+- `POST /api/admin/hotels` - Create hotel
+- `PUT /api/admin/hotels/:id` - Update hotel
+- `DELETE /api/admin/hotels/:id` - Delete hotel
+- `POST /api/admin/uploads` - Upload images
 
-If you don't want to set up the API:
-1. In `frontend/js/main.js`, change `useLocalData: false` to `useLocalData: true`
-2. Skip the backend setup - app uses 8 fallback hotels
-3. Frontend still works locally
+---
 
-## Third-Party API Integration
+## 📝 Development Notes
 
-InnStay now integrates with **Amadeus Hotel API** for real-time hotel data!
+### Technologies Used
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Backend:** Python Flask
+- **Database:** MySQL 8.0
+- **Authentication:** JWT (JSON Web Tokens)
+- **Password Hashing:** Werkzeug (scrypt)
 
-### Features
-- ✅ Real hotel data from Amadeus
-- ✅ Automatic fallback to 8 local hotels if API unavailable
-- ✅ Error handling and graceful degradation
-- ✅ Works offline with local data
-- ✅ Free tier (no credit card required)
+### Database Schema
+The database includes:
+- `users` - User accounts (admin/regular users)
+- `hotels` - Hotel listings with full details
+- `rooms` - Room types and availability
+- `bookings` - Customer bookings
+- `reviews` - Hotel reviews and ratings
+- `payments` - Payment transactions
 
-### Setup Guide
-See [API_SETUP_GUIDE.md](API_SETUP_GUIDE.md) for complete integration instructions
+---
 
-## User Roles
+## 🤝 Contributing
 
-- **Guest**: Browse hotels, view details
-- **User**: Register, book hotels, manage bookings, leave reviews
-- **Admin**: Manage hotels, rooms, users, view bookings, analytics
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -m 'Add feature'`
+4. Push to branch: `git push origin feature-name`
+5. Submit a pull request
 
-## Documentation
+---
 
-- [User Manual](docs/USER_MANUAL.md)
-- [Admin Guide](docs/ADMIN_GUIDE.md)
-- [Testing Reports](docs/TESTING.md)
-- [Deployment Guide](docs/DEPLOYMENT.md)
-
-## Screenshots
-
-See [Screenshots](docs/screenshots/) for UI walkthrough across all devices.
-
-## Testing
-
-Comprehensive testing documentation available in [TESTING.md](docs/TESTING.md):
-- Unit tests
-- Integration tests
-- Browser compatibility
-- Responsive design testing
-
-## Future Enhancements
-
-- [ ] Mobile app
-- [ ] Advanced analytics
-- [ ] AI-based recommendations
-- [ ] Social sharing features
-
-## License
+## 📄 License
 
 This project is for educational purposes.
 
-## Author
+---
 
-[Your Name]
+## 👨‍💻 Author
+
+**Abhinab Baja**  
+Repository: [github.com/abhinabbajagain/InnStay](https://github.com/abhinabbajagain/InnStay)
+
+---
+
+## 🆘 Need Help?
+
+If you encounter any issues:
+1. Check the Troubleshooting section above
+2. Review browser console for errors (F12)
+3. Check Flask terminal for backend errors
+4. Verify all prerequisites are installed
+5. Ensure MySQL service is running
+
+**Happy Coding! 🎉**
