@@ -5,41 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InnStay - Property Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/hotel-details.css">
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar sticky-top">
-        <div class="navbar-container">
-            <div class="navbar-left">
-                <a href="../index.html" class="navbar-logo">
-                    <span class="logo-icon">🏠</span>
-                    <span class="logo-text">InnStay</span>
-                </a>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-home"></i> innstay
+            </a>
+
+            <!-- Center: compact search pill (links to homepage) -->
+            <div class="nav-search-pill" id="navSearchPill" onclick="window.location.href='../index.html'">
+                <span class="nsp-seg">Anywhere</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg">Any week</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg nsp-last">Add guests</span>
+                <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
             </div>
-            <div class="navbar-center">
-                <a href="../index.html" class="nav-link">Stays</a>
-                <a href="#" class="nav-link">Experiences</a>
-                <a href="#" class="nav-link">Online Experiences</a>
-            </div>
+
+            <!-- Right side -->
             <div class="navbar-right">
-                <button class="navbar-menu" id="menuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div id="menuDropdown" class="navbar-dropdown">
-                    <a href="../pages/login.html" class="dropdown-item" data-auth="login">
-                        <span>Login</span>
-                    </a>
-                    <a href="../pages/register.html" class="dropdown-item" data-auth="register">
-                        <span>Sign up</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-auth="account" hidden>
-                        <span>My Account</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-auth="logout" hidden>
-                        <span>Logout</span>
-                    </a>
+                <a href="become-host.html" class="become-host-link">Become a Host</a>
+                <button class="btn-globe" type="button"><i class="fas fa-globe"></i></button>
+
+                <!-- Guest nav (logged out) -->
+                <div class="user-nav" data-auth="guestNav">
+                    <button class="btn-user-pill" id="guestMenuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="guestMenuDropdown">
+                        <a href="register.html" class="menu-item menu-item-bold">Sign up</a>
+                        <a href="login.html" class="menu-item">Log in</a>
+                        <div class="menu-separator"></div>
+                        <a href="become-host.html" class="menu-item">Become a Host</a>
+                        <a href="help-center.html" class="menu-item">Help</a>
+                    </div>
+                </div>
+
+                <!-- User nav (logged in) -->
+                <div class="user-nav" hidden data-auth="userNav">
+                    <button class="btn-user-pill" id="menuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="menuDropdown">
+                        <span class="menu-item menu-item-bold menu-label">My Account</span>
+                        <div class="menu-separator"></div>
+                        <a href="../../admin/login.html" class="menu-item"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                        <a href="#" class="menu-item" data-auth="logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,8 +164,7 @@
     <!-- Scripts -->
     <script src="../js/utils.js"></script>
     <script src="../js/hotel-store.js"></script>
-    <script src="../js/hotel-api.js"></script>
-    <script src="../js/main.js"></script>
+    <script src="../js/nav.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -168,11 +185,11 @@
         });
 
         async function displayPropertyDetails(propertyId) {
-            if (typeof HotelAPI === 'undefined') {
+            if (typeof HotelStore === 'undefined') {
                 window.location.href = '../index.html';
                 return;
             }
-            const property = await HotelAPI.getHotel(propertyId);
+            const property = HotelStore.getHotelById(propertyId);
             if (!property) {
                 window.location.href = '../index.html';
                 return;
@@ -185,7 +202,7 @@
             document.getElementById('propertyDescription').textContent = property.description;
 
             // Rating
-            document.getElementById('ratingStars').textContent = '★'.repeat(Math.floor(property.rating)) + (property.rating % 1 ? '★' : '');
+            document.getElementById('ratingStars').textContent = '★'.repeat(Math.round(property.rating));
             document.getElementById('ratingReviews').textContent = `${property.rating} (${property.reviews} reviews)`;
 
             // Rooms
@@ -195,9 +212,9 @@
             document.getElementById('guests').textContent = `${property.guests} guests`;
 
             // Images
-            const fallbackImage = typeof HotelAPI !== 'undefined' ? HotelAPI.placeholderImage : '';
+            const fallbackImage = typeof HotelStore !== 'undefined' ? HotelStore.placeholderImage : '';
             const safeImages = (property.images || []).map(img =>
-                typeof HotelAPI !== 'undefined' ? HotelAPI.getSafeImageUrl(img) : img
+                typeof HotelStore !== 'undefined' ? HotelStore.getSafeImageUrl(img) : img
             );
             const mainImage = document.getElementById('mainImage');
             mainImage.src = safeImages[0] || fallbackImage;

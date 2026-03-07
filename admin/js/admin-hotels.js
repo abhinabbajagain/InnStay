@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    if (typeof HotelAPI === 'undefined') {
+    if (typeof HotelStore === 'undefined') {
         return;
     }
 
@@ -35,13 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const hotels = getFilteredHotels();
-        const placeholder = HotelAPI.placeholderImage;
+        const placeholder = HotelStore.placeholderImage;
 
         tableBody.innerHTML = hotels.map(hotel => `
             <tr data-id="${hotel.id}">
                 <td>
                     <div class="hotel-cell">
-                        <img src="${HotelAPI.getSafeImageUrl(hotel.image)}" data-fallback="${placeholder}" alt="${hotel.name}">
+                        <img src="${HotelStore.getSafeImageUrl(hotel.image)}" data-fallback="${placeholder}" alt="${hotel.name}">
                         <div>
                             <strong>${hotel.name}</strong>
                             <div class="muted">${hotel.location}</div>
@@ -129,13 +129,9 @@ document.addEventListener('DOMContentLoaded', function () {
             hostName: form.hostName.value.trim()
         };
         try {
-            if (payload.id) {
-                await HotelAPI.updateHotel(payload.id, payload);
-            } else {
-                await HotelAPI.createHotel(payload);
-            }
+            HotelStore.upsertHotel(payload);
             closeModal();
-            await refreshHotels();
+            refreshHotels();
         } catch (error) {
             console.error('Failed to save hotel:', error);
         }
@@ -180,9 +176,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (action === 'delete') {
                 if (confirm('Delete this hotel?')) {
-                    HotelAPI.deleteHotel(id).then(refreshHotels).catch(error => {
+                    try {
+                        HotelStore.deleteHotel(id);
+                        refreshHotels();
+                    } catch (error) {
                         console.error('Failed to delete hotel:', error);
-                    });
+                    }
                 }
             }
         });
@@ -196,9 +195,9 @@ document.addEventListener('DOMContentLoaded', function () {
         statusFilter.addEventListener('change', renderTable);
     }
 
-    const refreshHotels = async () => {
+    const refreshHotels = () => {
         try {
-            state.hotels = await HotelAPI.listAdminHotels();
+            state.hotels = HotelStore.getNormalizedHotels();
             renderTable();
         } catch (error) {
             console.error('Failed to load hotels:', error);

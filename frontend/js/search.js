@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (value === 'rating') {
             sorted.sort((a, b) => b.rating - a.rating);
         }
+        if (value === 'newest') {
+            sorted.sort((a, b) => b.id - a.id);
+        }
 
         renderResults(sorted);
     };
@@ -67,10 +70,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const placeholder = typeof HotelAPI !== 'undefined' ? HotelAPI.placeholderImage : '';
+        const placeholder = typeof HotelStore !== 'undefined' ? HotelStore.placeholderImage : '';
         const html = hotels.map(hotel => {
-            const image = typeof HotelAPI !== 'undefined'
-                ? HotelAPI.getSafeImageUrl(hotel.image)
+            const image = typeof HotelStore !== 'undefined'
+                ? HotelStore.getSafeImageUrl(hotel.image)
                 : hotel.image;
 
             return `
@@ -145,12 +148,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const loadHotels = async () => {
-        if (typeof HotelAPI === 'undefined') {
+        if (typeof HotelStore === 'undefined') {
             renderResults([]);
             return;
         }
         try {
-            state.hotels = await HotelAPI.listHotels();
+            state.hotels = HotelStore.getNormalizedHotels();
             renderResults(state.hotels);
         } catch (error) {
             console.warn('Failed to load hotels:', error);

@@ -18,50 +18,55 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid px-4">
+    <nav class="navbar">
+        <div class="nav-inner">
             <a class="navbar-brand" href="index.html">
-                <i class="fas fa-building"></i> InnStay
+                <i class="fas fa-home"></i> innstay
             </a>
-            
-            <!-- Center Navigation Items -->
-            <div class="navbar-center">
-                <a class="nav-link" href="#homes">
-                    <i class="fas fa-home"></i> Homes
-                </a>
-                <a class="nav-link" href="#experiences">
-                    <i class="fas fa-lightbulb"></i> Experiences
-                </a>
-                <a class="nav-link" href="#services">
-                    <i class="fas fa-concierge-bell"></i> Services
-                </a>
+
+            <!-- Center: compact search pill -->
+            <div class="nav-search-pill" id="navSearchPill">
+                <span class="nsp-seg" id="nspWhere">Anywhere</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg" id="nspWhen">Any week</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg nsp-last" id="nspGuests">Add guests</span>
+                <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
             </div>
 
-            <!-- Right Side Actions & Menu -->
+            <!-- Right side -->
             <div class="navbar-right">
-                <button class="nav-link btn-menu" id="menuBtn" title="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+                <a href="pages/become-host.html" class="become-host-link">Become a Host</a>
+                <button class="btn-globe" type="button"><i class="fas fa-globe"></i></button>
 
-            <!-- Dropdown Menu -->
-            <div class="menu-dropdown" id="menuDropdown">
-                <a href="pages/login.html" class="menu-item" data-auth="login">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-                <a href="pages/register.html" class="menu-item" data-auth="register">
-                    <i class="fas fa-user-plus"></i> Register
-                </a>
-                <a href="#" class="menu-item" data-auth="account" hidden>
-                    <i class="fas fa-user-circle"></i>
-                    <span class="menu-label">My Account</span>
-                </a>
-                <a href="#" class="menu-item" data-auth="logout" hidden>
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-                <a href="../admin/login.html" class="menu-item">
-                    <i class="fas fa-user-shield"></i> Admin Panel
-                </a>
+                <!-- Guest nav (logged out) -->
+                <div class="user-nav" data-auth="guestNav">
+                    <button class="btn-user-pill" id="guestMenuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="guestMenuDropdown">
+                        <a href="pages/register.html" class="menu-item menu-item-bold">Sign up</a>
+                        <a href="pages/login.html" class="menu-item">Log in</a>
+                        <div class="menu-separator"></div>
+                        <a href="pages/become-host.html" class="menu-item">Become a Host</a>
+                        <a href="pages/help-center.html" class="menu-item">Help</a>
+                    </div>
+                </div>
+
+                <!-- User nav (logged in) -->
+                <div class="user-nav" hidden data-auth="userNav">
+                    <button class="btn-user-pill" id="menuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="menuDropdown">
+                        <span class="menu-item menu-item-bold menu-label">My Account</span>
+                        <div class="menu-separator"></div>
+                        <a href="admin/login.html" class="menu-item"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                        <a href="#" class="menu-item" data-auth="logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -301,54 +306,62 @@
         </div>
     </div>
 
-    <!-- Popular Homes Section -->
+
+    <!-- Category Filter Bar -->
+    <div class="category-bar" id="categoryBar">
+        <div class="category-scroll-wrap">
+            <button class="cat-arrow cat-arrow-left" id="catLeft"><i class="fas fa-chevron-left"></i></button>
+            <div class="category-scroll" id="categoryScroll">
+                <button class="category-item active" data-cat="trending"><span class="cat-emoji">&#128293;</span><span>Trending</span></button>
+                <button class="category-item" data-cat="rooms"><span class="cat-emoji">&#128719;</span><span>Rooms</span></button>
+                <button class="category-item" data-cat="views"><span class="cat-emoji">&#127956;</span><span>Amazing views</span></button>
+                <button class="category-item" data-cat="beach"><span class="cat-emoji">&#127958;</span><span>Beach</span></button>
+                <button class="category-item" data-cat="mansion"><span class="cat-emoji">&#127984;</span><span>Mansions</span></button>
+                <button class="category-item" data-cat="cabin"><span class="cat-emoji">&#129717;</span><span>Cabins</span></button>
+                <button class="category-item" data-cat="pool"><span class="cat-emoji">&#127946;</span><span>Amazing pools</span></button>
+                <button class="category-item" data-cat="countryside"><span class="cat-emoji">&#127806;</span><span>Countryside</span></button>
+                <button class="category-item" data-cat="city"><span class="cat-emoji">&#127961;</span><span>City</span></button>
+                <button class="category-item" data-cat="lake"><span class="cat-emoji">&#9973;</span><span>Lakefront</span></button>
+                <button class="category-item" data-cat="arctic"><span class="cat-emoji">&#10052;</span><span>Arctic</span></button>
+                <button class="category-item" data-cat="camping"><span class="cat-emoji">&#9978;</span><span>Camping</span></button>
+            </div>
+            <button class="cat-arrow cat-arrow-right" id="catRight"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="cat-filter-wrap">
+            <button class="cat-filter-btn"><i class="fas fa-sliders-h"></i> Filters</button>
+        </div>
+    </div>
+
+    <!-- Popular places to stay -->
     <section class="properties-section" id="homes">
-        <div class="container-fluid px-4">
-            <div class="section-header">
-                <h2 class="section-title">Popular homes in Bangkok</h2>
-                <a href="pages/search.html" class="section-link">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="properties-scroll">
-                <div class="properties-container" id="popularHotels">
-                    <!-- Properties will be loaded here by JavaScript -->
-                </div>
-            </div>
+        <div class="section-header">
+            <h2 class="section-title">Popular places to stay</h2>
+            <a href="pages/search.html" class="section-link">Show all</a>
+        </div>
+        <div class="properties-grid" id="popularHotels">
+            <!-- Properties will be loaded here by JavaScript -->
         </div>
     </section>
 
-    <!-- Available Next Month Section -->
+    <!-- Discover unique stays -->
     <section class="properties-section" id="experiences">
-        <div class="container-fluid px-4">
-            <div class="section-header">
-                <h2 class="section-title">Available next month in Seoul</h2>
-                <a href="pages/search.html" class="section-link">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="properties-scroll">
-                <div class="properties-container" id="nextMonthHotels">
-                    <!-- Properties will be loaded here by JavaScript -->
-                </div>
-            </div>
+        <div class="section-header">
+            <h2 class="section-title">Discover unique stays</h2>
+            <a href="pages/search.html" class="section-link">Show all</a>
+        </div>
+        <div class="properties-grid" id="nextMonthHotels">
+            <!-- Properties will be loaded here by JavaScript -->
         </div>
     </section>
 
-    <!-- Stay in Tokyo Section -->
+    <!-- Top-rated homes nearby -->
     <section class="properties-section" id="services">
-        <div class="container-fluid px-4">
-            <div class="section-header">
-                <h2 class="section-title">Stay in Tokyo</h2>
-                <a href="pages/search.html" class="section-link">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="properties-scroll">
-                <div class="properties-container" id="tokyoHotels">
-                    <!-- Properties will be loaded here by JavaScript -->
-                </div>
-            </div>
+        <div class="section-header">
+            <h2 class="section-title">Top-rated homes nearby</h2>
+            <a href="pages/search.html" class="section-link">Show all</a>
+        </div>
+        <div class="properties-grid" id="tokyoHotels">
+            <!-- Properties will be loaded here by JavaScript -->
         </div>
     </section>
 
@@ -390,7 +403,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 InnStay. All rights reserved.</p>
+                <p>&copy; 2026 InnStay. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -401,7 +414,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <!-- External JS -->
     <script src="js/utils.js"></script>
-    <script src="js/hotel-api.js"></script>
+    <script src="js/hotel-store.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

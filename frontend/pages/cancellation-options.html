@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cancellation Options - InnStay">
+    <title>Cancellation Options - InnStay</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-home"></i> innstay
+            </a>
+
+            <!-- Center: compact search pill (links to homepage) -->
+            <div class="nav-search-pill" id="navSearchPill" onclick="window.location.href='../index.html'">
+                <span class="nsp-seg">Anywhere</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg">Any week</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg nsp-last">Add guests</span>
+                <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- Right side -->
+            <div class="navbar-right">
+                <a href="become-host.html" class="become-host-link">Become a Host</a>
+                <button class="btn-globe" type="button"><i class="fas fa-globe"></i></button>
+
+                <!-- Guest nav (logged out) -->
+                <div class="user-nav" data-auth="guestNav">
+                    <button class="btn-user-pill" id="guestMenuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="guestMenuDropdown">
+                        <a href="register.html" class="menu-item menu-item-bold">Sign up</a>
+                        <a href="login.html" class="menu-item">Log in</a>
+                        <div class="menu-separator"></div>
+                        <a href="become-host.html" class="menu-item">Become a Host</a>
+                        <a href="help-center.html" class="menu-item">Help</a>
+                    </div>
+                </div>
+
+                <!-- User nav (logged in) -->
+                <div class="user-nav" hidden data-auth="userNav">
+                    <button class="btn-user-pill" id="menuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="menuDropdown">
+                        <span class="menu-item menu-item-bold menu-label">My Account</span>
+                        <div class="menu-separator"></div>
+                        <a href="../../admin/login.html" class="menu-item"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                        <a href="#" class="menu-item" data-auth="logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="mb-4">Cancellation Options</h1>
+                <p class="lead">Our flexible cancellation options help protect both guests and hosts.</p>
+
+                <div class="mt-5">
+                    <h3>Cancellation Policies</h3>
+                    <div class="accordion" id="cancellationAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#policy1">
+                                    Flexible Cancellation
+                                </button>
+                            </h2>
+                            <div id="policy1" class="accordion-collapse collapse show" data-bs-parent="#cancellationAccordion">
+                                <div class="accordion-body">
+                                    Cancel up to 30 days before check-in for a full refund. After that, 50% of the booking amount will be refunded.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#policy2">
+                                    Moderate Cancellation
+                                </button>
+                            </h2>
+                            <div id="policy2" class="accordion-collapse collapse" data-bs-parent="#cancellationAccordion">
+                                <div class="accordion-body">
+                                    Cancel up to 14 days before check-in for a full refund. Between 14 and 7 days before, 50% will be refunded. Within 7 days, no refund.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#policy3">
+                                    Strict Cancellation
+                                </button>
+                            </h2>
+                            <div id="policy3" class="accordion-collapse collapse" data-bs-parent="#cancellationAccordion">
+                                <div class="accordion-body">
+                                    Full refund if canceled 60 days before check-in. 50% refund if canceled 30-60 days before. No refund for cancellations within 30 days.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 p-4 bg-light rounded">
+                    <h5>Important Notes</h5>
+                    <ul>
+                        <li>Each property may have different cancellation policies</li>
+                        <li>Service fees are non-refundable</li>
+                        <li>Check your booking confirmation for the specific policy</li>
+                        <li>Contact support for special cancellation requests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container-fluid">
+            <div class="row px-4">
+                <div class="col-md-3">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="safety-information.html">Safety information</a></li>
+                        <li><a href="cancellation-options.html">Cancellation options</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Community</h5>
+                    <ul>
+                        <li><a href="about-us.html">About us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hosting</h5>
+                    <ul>
+                        <li><a href="become-host.html">Become a host</a></li>
+                        <li><a href="host-faq.html">Host FAQ</a></li>
+                        <li><a href="community-guidelines.html">Community guidelines</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow us</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 InnStay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

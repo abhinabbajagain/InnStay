@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Us - InnStay">
+    <title>About Us - InnStay</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-home"></i> innstay
+            </a>
+
+            <!-- Center: compact search pill (links to homepage) -->
+            <div class="nav-search-pill" id="navSearchPill" onclick="window.location.href='../index.html'">
+                <span class="nsp-seg">Anywhere</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg">Any week</span>
+                <span class="nsp-sep"></span>
+                <span class="nsp-seg nsp-last">Add guests</span>
+                <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- Right side -->
+            <div class="navbar-right">
+                <a href="become-host.html" class="become-host-link">Become a Host</a>
+                <button class="btn-globe" type="button"><i class="fas fa-globe"></i></button>
+
+                <!-- Guest nav (logged out) -->
+                <div class="user-nav" data-auth="guestNav">
+                    <button class="btn-user-pill" id="guestMenuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="guestMenuDropdown">
+                        <a href="register.html" class="menu-item menu-item-bold">Sign up</a>
+                        <a href="login.html" class="menu-item">Log in</a>
+                        <div class="menu-separator"></div>
+                        <a href="become-host.html" class="menu-item">Become a Host</a>
+                        <a href="help-center.html" class="menu-item">Help</a>
+                    </div>
+                </div>
+
+                <!-- User nav (logged in) -->
+                <div class="user-nav" hidden data-auth="userNav">
+                    <button class="btn-user-pill" id="menuBtn" type="button">
+                        <i class="fas fa-bars"></i>
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="menu-dropdown" id="menuDropdown">
+                        <span class="menu-item menu-item-bold menu-label">My Account</span>
+                        <div class="menu-separator"></div>
+                        <a href="../../admin/login.html" class="menu-item"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                        <a href="#" class="menu-item" data-auth="logout"><i class="fas fa-sign-out-alt"></i> Log out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="mb-4">About InnStay</h1>
+                
+                <div class="mt-5">
+                    <h3>Our Mission</h3>
+                    <p>InnStay is dedicated to making travel more accessible and enjoyable for everyone. We connect travelers with unique accommodations and experiences around the world.</p>
+                </div>
+
+                <div class="mt-5">
+                    <h3>Our Story</h3>
+                    <p>Founded in 2024, InnStay started with a simple idea: to revolutionize the way people find and book accommodations while supporting local hosts and communities worldwide.</p>
+                </div>
+
+                <div class="mt-5">
+                    <h3>Our Values</h3>
+                    <div class="row mt-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="card p-3">
+                                <h5><i class="fas fa-handshake text-primary me-2"></i>Trust & Safety</h5>
+                                <p>We prioritize the safety and security of our community members.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card p-3">
+                                <h5><i class="fas fa-globe text-primary me-2"></i>Inclusivity</h5>
+                                <p>We welcome travelers and hosts from all backgrounds and cultures.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card p-3">
+                                <h5><i class="fas fa-leaf text-primary me-2"></i>Sustainability</h5>
+                                <p>We're committed to responsible travel and environmental protection.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card p-3">
+                                <h5><i class="fas fa-users text-primary me-2"></i>Community</h5>
+                                <p>We support local economies and cultural exchange.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container-fluid">
+            <div class="row px-4">
+                <div class="col-md-3">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="help-center.html">Help Center</a></li>
+                        <li><a href="safety-information.html">Safety information</a></li>
+                        <li><a href="cancellation-options.html">Cancellation options</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Community</h5>
+                    <ul>
+                        <li><a href="about-us.html">About us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hosting</h5>
+                    <ul>
+                        <li><a href="become-host.html">Become a host</a></li>
+                        <li><a href="host-faq.html">Host FAQ</a></li>
+                        <li><a href="community-guidelines.html">Community guidelines</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow us</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 InnStay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

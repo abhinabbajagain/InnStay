@@ -65,19 +65,41 @@ const InnStay = {
             });
         });
 
-        // Menu button
-        if (menuBtn) {
-            menuBtn.addEventListener('click', () => {
-                menuDropdown.classList.toggle('show');
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.navbar-right') && !e.target.closest('.menu-dropdown')) {
-                    menuDropdown.classList.remove('show');
-                }
+        // Nav search pill - scroll to search hero
+        const navSearchPill = document.getElementById('navSearchPill');
+        if (navSearchPill) {
+            navSearchPill.addEventListener('click', () => {
+                document.querySelector('.search-hero')?.scrollIntoView({ behavior: 'smooth' });
             });
         }
+
+        // Guest menu button
+        const guestMenuBtn = document.getElementById('guestMenuBtn');
+        const guestMenuDropdown = document.getElementById('guestMenuDropdown');
+        if (guestMenuBtn && guestMenuDropdown) {
+            guestMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                guestMenuDropdown.classList.toggle('show');
+            });
+        }
+
+        // Menu button
+        if (menuBtn) {
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = menuDropdown.classList.toggle('show');
+                menuBtn.classList.toggle('open', isOpen);
+            });
+        }
+
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-nav')) {
+                if (menuDropdown) menuDropdown.classList.remove('show');
+                if (menuBtn) menuBtn.classList.remove('open');
+                if (guestMenuDropdown) guestMenuDropdown.classList.remove('show');
+            }
+        });
 
         // Date picker
         this.setupDatePicker();
@@ -87,6 +109,26 @@ const InnStay = {
 
         // Where picker
         this.setupWherePicker();
+
+        // Category bar arrows
+        const catLeft = document.getElementById('catLeft');
+        const catRight = document.getElementById('catRight');
+        const categoryScroll = document.getElementById('categoryScroll');
+        if (catLeft && categoryScroll) {
+            catLeft.addEventListener('click', () => { categoryScroll.scrollBy({ left: -200, behavior: 'smooth' }); });
+        }
+        if (catRight && categoryScroll) {
+            catRight.addEventListener('click', () => { categoryScroll.scrollBy({ left: 200, behavior: 'smooth' }); });
+        }
+        // Category item active toggle
+        if (categoryScroll) {
+            categoryScroll.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    categoryScroll.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+        }
         
         // Map view close button
         const mapCloseBtn = document.getElementById('mapCloseBtn');
@@ -768,8 +810,8 @@ const InnStay = {
      */
     async loadHotelsFromDatabase() {
         try {
-            const hotels = typeof HotelAPI !== 'undefined'
-                ? await HotelAPI.listHotels({ limit: 6 })
+            const hotels = typeof HotelStore !== 'undefined'
+                ? HotelStore.getNormalizedHotels().slice(0, 6)
                 : [];
             const mappedHotels = hotels.map(hotel => ({
                 ...hotel,
@@ -820,34 +862,27 @@ const InnStay = {
      * Create property card HTML
      */
     createPropertyCard(hotel) {
-        const stars = '★'.repeat(Math.floor(hotel.rating));
-        const starHTML = `<span class="stars">${stars}</span>`;
-        const fallback = typeof HotelAPI !== 'undefined' ? HotelAPI.placeholderImage : '';
-        const image = typeof HotelAPI !== 'undefined'
-            ? HotelAPI.getSafeImageUrl(hotel.image)
-            : hotel.image;
-        
+        const fallback = typeof HotelStore !== 'undefined' ? HotelStore.placeholderImage : '';
+        const image = typeof HotelStore !== 'undefined' ? HotelStore.getSafeImageUrl(hotel.image) : hotel.image;
+        const badgeHtml = hotel.isGuestFavorite ? '<div class="prop-badge">Guest favorite</div>' : '';
+
         return `
             <div class="property-card" data-hotel-id="${hotel.id}">
-                <div class="property-image-wrapper">
-                    <img src="${image}" data-fallback="${fallback}" alt="${hotel.name}" class="property-image">
-                    ${hotel.isGuestFavorite ? `<div class="property-badge-top-left">Guest favorite</div>` : ''}
-                    <div class="property-badge-top-right" data-favorite-btn>
-                        <i class="far fa-heart ${hotel.isFavorite ? 'favorited' : ''}"></i>
-                    </div>
+                <div class="prop-img-wrap">
+                    <img src="${image}" data-fallback="${fallback}" alt="${hotel.name}" class="prop-img">
+                    ${badgeHtml}
+                    <button class="prop-heart" type="button" data-favorite-btn>
+                        <i class="${hotel.isFavorite ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
                 </div>
-                <div class="property-content">
-                    <h3 class="property-name">${hotel.name}</h3>
-                    <p class="property-location">${hotel.location}</p>
-                    <div class="property-rating">
-                        ${starHTML}
-                        <span class="count">${hotel.rating}</span>
-                        <span class="count">(${hotel.reviews})</span>
+                <div class="prop-info">
+                    <div class="prop-row1">
+                        <span class="prop-location">${hotel.location}</span>
+                        <span class="prop-rating"><i class="fas fa-star"></i> ${hotel.rating}</span>
                     </div>
-                    <p class="property-price">
-                        <span class="amount">$${hotel.price}</span>
-                        <span class="duration">for 2 nights</span>
-                    </p>
+                    <div class="prop-name">${hotel.name}</div>
+                    <div class="prop-dates">Available this month</div>
+                    <div class="prop-price"><strong>$${hotel.price}</strong> <span>night</span></div>
                 </div>
             </div>
         `;
@@ -901,33 +936,23 @@ const InnStay = {
         }
 
         const user = Utils.getFromStorage('currentUser');
-        const loginLinks = document.querySelectorAll('[data-auth="login"]');
-        const registerLinks = document.querySelectorAll('[data-auth="register"]');
-        const accountLinks = document.querySelectorAll('[data-auth="account"]');
-        const logoutLinks = document.querySelectorAll('[data-auth="logout"]');
+        const guestNavs    = document.querySelectorAll('[data-auth="guestNav"]');
+        const userNavs     = document.querySelectorAll('[data-auth="userNav"]');
+        const logoutLinks  = document.querySelectorAll('[data-auth="logout"]');
 
         const setHidden = (element, hidden) => {
-            if (!element) {
-                return;
-            }
+            if (!element) return;
             element.hidden = hidden;
-            const container = element.closest('li');
-            if (container && container.hasAttribute('hidden')) {
-                container.hidden = hidden;
-            }
         };
 
         if (user) {
-            loginLinks.forEach(link => setHidden(link, true));
-            registerLinks.forEach(link => setHidden(link, true));
-            accountLinks.forEach(link => {
-                setHidden(link, false);
-                const label = link.querySelector('span');
-                const text = user.name ? `Hi, ${user.name}` : 'My Account';
+            guestNavs.forEach(nav => nav.hidden = true);
+            userNavs.forEach(nav => {
+                nav.hidden = false;
+                const label = nav.querySelector('.menu-label');
                 if (label) {
-                    label.textContent = text;
-                } else {
-                    link.textContent = text;
+                    const firstName = (user.name || user.fullName || 'User').split(' ')[0];
+                    label.textContent = 'Hi, ' + firstName;
                 }
             });
             logoutLinks.forEach(link => {
@@ -943,9 +968,8 @@ const InnStay = {
                 }
             });
         } else {
-            loginLinks.forEach(link => setHidden(link, false));
-            registerLinks.forEach(link => setHidden(link, false));
-            accountLinks.forEach(link => setHidden(link, true));
+            guestNavs.forEach(nav => nav.hidden = false);
+            userNavs.forEach(nav => nav.hidden = true);
             logoutLinks.forEach(link => setHidden(link, true));
         }
     },
@@ -989,12 +1013,12 @@ const InnStay = {
      * Get comprehensive property details
      */
     async getPropertyDetails(id) {
-        if (typeof HotelAPI === 'undefined') {
+        if (typeof HotelStore === 'undefined') {
             return null;
         }
 
         try {
-            return await HotelAPI.getHotel(id);
+            return HotelStore.getHotelById(id);
         } catch (error) {
             console.warn('Failed to fetch hotel details:', error);
             return null;

@@ -1,42 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Authentication temporarily disabled - frontend only version
+    // Will be re-enabled when backend is added
+    
     if (typeof Utils === 'undefined') {
         return;
     }
 
-    const page = document.body.getAttribute('data-page');
-    const isLoginPage = page === 'login';
-    const token = localStorage.getItem('authToken');
-    const apiBaseUrl = 'http://localhost:5000/api';
-
-    if (isLoginPage) {
-        return;
-    }
-
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    fetch(`${apiBaseUrl}/auth/me`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .then(response => response.json().then(data => ({ ok: response.ok, data })))
-        .then(result => {
-            if (!result.ok || !result.data.user || result.data.user.role !== 'admin') {
-                Utils.removeFromStorage('adminUser');
-                Utils.removeFromStorage('currentUser');
-                localStorage.removeItem('authToken');
-                window.location.href = 'login.html';
-                return;
-            }
-            Utils.saveToStorage('adminUser', result.data.user);
-        })
-        .catch(() => {
-            Utils.removeFromStorage('adminUser');
-            Utils.removeFromStorage('currentUser');
-            localStorage.removeItem('authToken');
-            window.location.href = 'login.html';
-        });
+    // Create demo admin user for localStorage
+    const demoAdmin = {
+        id: 1,
+        email: 'admin@demo.com',
+        name: 'Admin User',
+        role: 'admin'
+    };
+    
+    Utils.saveToStorage('adminUser', demoAdmin);
+    Utils.saveToStorage('currentUser', demoAdmin);
+    
+    // All admin pages are accessible without login for now
+    console.log('Admin access granted (demo mode)');
 });
