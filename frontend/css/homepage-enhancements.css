@@ -1,0 +1,422 @@
+/* ============================================
+   InnStay - Homepage Interactive Enhancements
+   Description: Enhanced CSS for all interactive elements
+   ============================================ */
+
+/* ============================================
+   Modal Base Styles
+   ============================================ */
+
+.where-picker-modal,
+.date-picker-modal,
+.guest-picker-modal {
+    pointer-events: none;
+}
+
+.where-picker-modal.active,
+.date-picker-modal.active,
+.guest-picker-modal.active {
+    pointer-events: auto;
+}
+
+.map-view-modal {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.map-view-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================
+   Button Interactive States
+   ============================================ */
+
+.quick-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.quick-btn:hover {
+    background: #f0f0f0 !important;
+    transform: translateY(-2px);
+}
+
+.quick-btn:active {
+    transform: translateY(0);
+}
+
+.destination-item {
+    cursor: pointer;
+    transition: background 0.2s ease;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.destination-item:hover {
+    background: #f7f7f7;
+}
+
+/* ============================================
+   Calendar Interactive States
+   ============================================ */
+
+.calendar-day {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-day:not(.other-month):hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.calendar-day.today {
+    background: #FF5A5F !important;
+    color: white !important;
+}
+
+.calendar-day.selected-range {
+    background: #ffe0e0;
+}
+
+/* ============================================
+   Property Card Interactive States
+   ============================================ */
+
+.property-card {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(0);
+}
+
+.property-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.property-card:active {
+    transform: translateY(-4px);
+}
+
+.prop-heart {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.prop-heart:hover {
+    transform: scale(1.1);
+}
+
+.prop-heart i.fas {
+    color: #FF5A5F !important;
+}
+
+.prop-heart i.far {
+    color: rgba(255, 90, 95, 0.4);
+}
+
+/* ============================================
+   Map Property Card Interactive States
+   ============================================ */
+
+.map-property-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.map-property-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ============================================
+   Category Item Interactive States
+   ============================================ */
+
+.category-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.category-item:hover {
+    transform: translateY(-2px);
+    opacity: 0.8;
+}
+
+.category-item.active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+.category-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background: #FF5A5F;
+    border-radius: 1px;
+}
+
+/* ============================================
+   Date Picker Enhancements
+   ============================================ */
+
+.date-tab {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.date-tab:hover {
+    background: #f0f0f0;
+}
+
+.date-tab.active {
+    background: #FF5A5F;
+    color: white;
+}
+
+/* ============================================
+   Guest Picker Enhancements
+   ============================================ */
+
+.guest-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.guest-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.guest-btn:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   Search Field Interactive States
+   ============================================ */
+
+.search-field {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.search-field:hover {
+    background: #f0f0f0;
+}
+
+.search-field input {
+    cursor: pointer;
+    pointer-events: none;
+}
+
+/* ============================================
+   Navigation Pill States
+   ============================================ */
+
+.nav-search-pill {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-search-pill:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   User Menu States
+   ============================================ */
+
+.btn-user-pill {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-user-pill:hover {
+    background: #f0f0f0;
+}
+
+.btn-user-pill.open {
+    background: #f0f0f0;
+}
+
+.menu-dropdown {
+    transition: all 0.2s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.menu-dropdown.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* ============================================
+   Flex Buttons
+   ============================================ */
+
+.flex-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.flex-btn:hover {
+    background: #f0f0f0;
+}
+
+.flex-btn.active {
+    background: #FF5A5F;
+    color: white;
+}
+
+/* ============================================
+   Filter Buttons
+   ============================================ */
+
+.cat-filter-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cat-filter-btn:hover {
+    background: #f0f0f0;
+}
+
+/* ============================================
+   Map Controls
+   ============================================ */
+
+.map-search-field {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.map-search-field:hover {
+    background: #f7f7f7;
+}
+
+.map-close-btn,
+.map-filters-btn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.map-close-btn:hover,
+.map-filters-btn:hover {
+    background: #FF5A5F;
+    color: white;
+}
+
+/* ============================================
+   Focus States for Accessibility
+   ============================================ */
+
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #FF5A5F;
+    outline-offset: 2px;
+}
+
+/* ============================================
+   Loading and Animation States
+   ============================================ */
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+}
+
+/* ============================================
+   Mobile Responsive Enhancements
+   ============================================ */
+
+@media (max-width: 768px) {
+    .property-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .category-item.active::after {
+        width: 16px;
+        bottom: -6px;
+    }
+
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ============================================
+   Print and Focus Styles
+   ============================================ */
+
+@media print {
+    .search-hero,
+    .category-bar,
+    .menu-dropdown,
+    .where-picker-modal,
+    .date-picker-modal,
+    .guest-picker-modal,
+    .map-view-modal {
+        display: none !important;
+    }
+}
+
+/* Ensure disabled states are visible */
+button:disabled,
+input:disabled,
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ensure z-index hierarchy */
+.navbar {
+    z-index: 1000;
+}
+
+.search-hero.scrolled {
+    z-index: 999;
+}
+
+.where-picker-modal,
+.date-picker-modal,
+.guest-picker-modal {
+    z-index: 1100;
+}
+
+.map-view-modal {
+    z-index: 1050;
+}
+
+.loading-screen {
+    z-index: 9999;
+}

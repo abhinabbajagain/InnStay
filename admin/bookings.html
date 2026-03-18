@@ -19,12 +19,12 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Search by booking ID or guest">
-                <select>
-                    <option>Status: All</option>
-                    <option>Confirmed</option>
-                    <option>Pending</option>
-                    <option>Cancelled</option>
+                <input type="text" id="bookingSearch" placeholder="Search by booking ID or guest">
+                <select id="statusFilter">
+                    <option value="All">Status: All</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
 
@@ -42,44 +42,115 @@
                             <th>Booking ID</th>
                             <th>Guest</th>
                             <th>Hotel</th>
-                            <th>Dates</th>
+                            <th>Check-In Date</th>
+                            <th>Check-Out Date</th>
                             <th>Status</th>
                             <th>Total</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>#BKG-2190</td>
-                            <td>Emma Johnson</td>
-                            <td>Harbor View Suites</td>
-                            <td>Feb 20 - Feb 24</td>
-                            <td><span class="badge badge-success">Confirmed</span></td>
-                            <td>$860</td>
-                        </tr>
-                        <tr>
-                            <td>#BKG-2188</td>
-                            <td>Michael Lee</td>
-                            <td>Skyline Loft</td>
-                            <td>Feb 18 - Feb 22</td>
-                            <td><span class="badge badge-warning">Pending</span></td>
-                            <td>$640</td>
-                        </tr>
-                        <tr>
-                            <td>#BKG-2179</td>
-                            <td>Sarah Patel</td>
-                            <td>Garden Retreat</td>
-                            <td>Feb 27 - Mar 2</td>
-                            <td><span class="badge badge-danger">Cancelled</span></td>
-                            <td>$520</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="bookingTableBody"></tbody>
                 </table>
             </div>
         </main>
     </div>
 
     <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-data.js"></script>
     <script src="js/admin-auth.js"></script>
     <script src="js/admin-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ensureAuth();
+
+            const tableBody = document.getElementById('bookingTableBody');
+            const searchInput = document.getElementById('bookingSearch');
+            const statusFilter = document.getElementById('statusFilter');
+
+            let state = { bookings: [], hotels: [] };
+
+            function loadData() {
+                if (typeof AdminData !== 'undefined') {
+                    state.bookings = deepClone(AdminData.bookings || []);
+                    state.hotels = deepClone(AdminData.hotels || []);
+                }
+            }
+
+            function getFilteredBookings() {
+                const query = (searchInput?.value || '').toLowerCase().trim();
+                const status = statusFilter?.value || 'All';
+
+                return state.bookings.filter(booking => {
+                    const matchesQuery = !query ||
+                        booking.id.toString().includes(query) ||
+                        booking.guestName.toLowerCase().includes(query);
+                    const matchesStatus = status === 'All' || booking.status === status;
+                    return matchesQuery && matchesStatus;
+                });
+            }
+
+            function renderTable() {
+                if (!tableBody) return;
+
+                const bookings = getFilteredBookings();
+                tableBody.innerHTML = bookings.map(booking => {
+                    const hotel = state.hotels.find(h => h.id === booking.hotelId);
+                    const total = booking.nights * (booking.pricePerNight || 150);
+                    return `
+                        <tr data-id="${booking.id}">
+                            <td><strong>#BKG-${String(booking.id).padStart(4, '0')}</strong></td>
+                            <td>${booking.guestName}</td>
+                            <td>${hotel?.title || 'Unknown'}</td>
+                            <td>${formatDate(booking.checkIn)}</td>
+                            <td>${formatDate(booking.checkOut)}</td>
+                            <td>${getStatusBadge(booking.status)}</td>
+                            <td>${formatCurrency(total)}</td>
+                            <td class="action-cells">
+                                <button class="btn btn-sm btn-outline" data-action="view">View</button>
+                                <button class="btn btn-sm btn-danger" data-action="cancel">Cancel</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            if (tableBody) {
+                tableBody.addEventListener('click', (event) => {
+                    const action = event.target.getAttribute('data-action');
+                    const row = event.target.closest('tr');
+                    const id = row?.getAttribute('data-id');
+
+                    if (!action || !id) return;
+
+                    if (action === 'view') {
+                        const booking = state.bookings.find(b => b.id === Number(id));
+                        if (booking) {
+                            showNotification(`Viewing booking #BKG-${String(id).padStart(4, '0')} for ${booking.guestName}`, 'info');
+                        }
+                    }
+
+                    if (action === 'cancel') {
+                        if (confirmDialog('Cancel this booking?')) {
+                            if (typeof AdminData !== 'undefined') {
+                                const booking = AdminData.bookings.find(b => b.id === Number(id));
+                                if (booking) {
+                                    booking.status = 'Cancelled';
+                                    showNotification('Booking cancelled', 'success');
+                                    loadData();
+                                    renderTable();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (searchInput) searchInput.addEventListener('input', renderTable);
+            if (statusFilter) statusFilter.addEventListener('change', renderTable);
+
+            loadData();
+            renderTable();
+        });
+    </script>
 </body>
 </html>

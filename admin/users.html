@@ -19,12 +19,12 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Search users by name or email">
-                <select>
-                    <option>Role: All</option>
-                    <option>Guest</option>
-                    <option>Host</option>
-                    <option>Admin</option>
+                <input type="text" id="userSearch" placeholder="Search users by name or email">
+                <select id="roleFilter">
+                    <option value="All">Role: All</option>
+                    <option value="Guest">Guest</option>
+                    <option value="Host">Host</option>
+                    <option value="Admin">Admin</option>
                 </select>
             </div>
 
@@ -33,7 +33,7 @@
                     <h2>User Directory</h2>
                     <div class="table-actions">
                         <button class="btn btn-secondary"><i class="fa-solid fa-download"></i> Export</button>
-                        <button class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Add User</button>
+                        <button class="btn btn-primary" id="addUserBtn"><i class="fa-solid fa-user-plus"></i> Add User</button>
                     </div>
                 </div>
                 <table>
@@ -47,48 +47,199 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Emma Johnson</td>
-                            <td>emma@innstay.com</td>
-                            <td>Guest</td>
-                            <td><span class="badge badge-success">Active</span></td>
-                            <td>Jan 05, 2026</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline">View</button>
-                                <button class="btn btn-sm btn-danger">Disable</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Michael Lee</td>
-                            <td>michael@innstay.com</td>
-                            <td>Host</td>
-                            <td><span class="badge badge-info">Verified</span></td>
-                            <td>Dec 20, 2025</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline">View</button>
-                                <button class="btn btn-sm btn-secondary">Message</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Sarah Patel</td>
-                            <td>sarah@innstay.com</td>
-                            <td>Host</td>
-                            <td><span class="badge badge-warning">Review</span></td>
-                            <td>Jan 22, 2026</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline">Review</button>
-                                <button class="btn btn-sm btn-danger">Suspend</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="userTableBody"></tbody>
                 </table>
+            </div>
+
+            <div class="admin-modal" id="userModal">
+                <div class="admin-modal-content">
+                    <div class="admin-modal-header">
+                        <h2 id="userModalTitle">Add User</h2>
+                        <button class="modal-close" type="button" data-modal-close>&times;</button>
+                    </div>
+                    <form id="userForm">
+                        <div class="admin-modal-body">
+                            <input type="hidden" name="userId" id="userId">
+                            <div class="modal-grid">
+                                <div class="form-group">
+                                    <label for="userName">Full Name</label>
+                                    <input type="text" id="userName" name="userName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userEmail">Email</label>
+                                    <input type="email" id="userEmail" name="userEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userPhone">Phone</label>
+                                    <input type="tel" id="userPhone" name="userPhone">
+                                </div>
+                                <div class="form-group">
+                                    <label for="userRole">Role</label>
+                                    <select id="userRole" name="userRole">
+                                        <option value="Guest">Guest</option>
+                                        <option value="Host">Host</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-modal-footer">
+                            <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save User</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </main>
     </div>
 
     <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-data.js"></script>
     <script src="js/admin-auth.js"></script>
     <script src="js/admin-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ensureAuth();
+
+            const tableBody = document.getElementById('userTableBody');
+            const addBtn = document.getElementById('addUserBtn');
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            const modalTitle = document.getElementById('userModalTitle');
+            const closeButtons = document.querySelectorAll('[data-modal-close]');
+            const searchInput = document.getElementById('userSearch');
+            const roleFilter = document.getElementById('roleFilter');
+
+            let state = { users: [] };
+
+            function loadUsers() {
+                if (typeof AdminData !== 'undefined') {
+                    state.users = deepClone(AdminData.users || []);
+                }
+            }
+
+            function getFilteredUsers() {
+                const query = (searchInput?.value || '').toLowerCase().trim();
+                const role = roleFilter?.value || 'All';
+
+                return state.users.filter(user => {
+                    const matchesQuery = !query ||
+                        user.name.toLowerCase().includes(query) ||
+                        user.email.toLowerCase().includes(query);
+                    const matchesRole = role === 'All' || user.role === role;
+                    return matchesQuery && matchesRole;
+                });
+            }
+
+            function renderTable() {
+                if (!tableBody) return;
+
+                const users = getFilteredUsers();
+                tableBody.innerHTML = users.map(user => `
+                    <tr data-id="${user.id}">
+                        <td><strong>${user.name}</strong></td>
+                        <td>${user.email}</td>
+                        <td><span class="badge badge-info">${user.role}</span></td>
+                        <td><span class="badge badge-${user.status === 'Active' ? 'success' : 'warning'}">${user.status}</span></td>
+                        <td>${formatDate(user.joinedDate)}</td>
+                        <td class="action-cells">
+                            <button class="btn btn-sm btn-outline" data-action="edit">Edit</button>
+                            <button class="btn btn-sm btn-danger" data-action="delete">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            function openModal(user = {}) {
+                if (!modal || !form) return;
+
+                modalTitle.textContent = user.id ? 'Edit User' : 'Add User';
+                form.reset();
+                form.userId.value = user.id || '';
+                form.userName.value = user.name || '';
+                form.userEmail.value = user.email || '';
+                form.userPhone.value = user.phone || '';
+                form.userRole.value = user.role || 'Guest';
+
+                modal.classList.add('show');
+            }
+
+            function closeModal() {
+                if (modal) modal.classList.remove('show');
+            }
+
+            function handleFormSubmit(event) {
+                event.preventDefault();
+
+                const payload = {
+                    id: form.userId.value ? Number(form.userId.value) : Math.max(...state.users.map(u => u.id), 0) + 1,
+                    name: form.userName.value.trim(),
+                    email: form.userEmail.value.trim(),
+                    phone: form.userPhone.value.trim(),
+                    role: form.userRole.value,
+                    status: 'Active',
+                    joinedDate: new Date().toISOString().split('T')[0]
+                };
+
+                try {
+                    if (typeof AdminData !== 'undefined') {
+                        const existingIndex = AdminData.users.findIndex(u => u.id === payload.id);
+                        if (existingIndex >= 0) {
+                            AdminData.users[existingIndex] = payload;
+                        } else {
+                            AdminData.users.push(payload);
+                        }
+                    }
+                    showNotification('User saved successfully!', 'success');
+                    closeModal();
+                    loadUsers();
+                    renderTable();
+                } catch (error) {
+                    showNotification('Failed to save user', 'error');
+                }
+            }
+
+            if (addBtn) addBtn.addEventListener('click', () => openModal());
+            if (closeButtons.length) closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
+            if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            if (form) form.addEventListener('submit', handleFormSubmit);
+
+            if (tableBody) {
+                tableBody.addEventListener('click', (event) => {
+                    const action = event.target.getAttribute('data-action');
+                    const row = event.target.closest('tr');
+                    const id = row?.getAttribute('data-id');
+
+                    if (!action || !id) return;
+
+                    if (action === 'edit') {
+                        const user = state.users.find(u => Number(u.id) === Number(id));
+                        if (user) openModal(deepClone(user));
+                    }
+
+                    if (action === 'delete') {
+                        if (confirmDialog('Delete this user?')) {
+                            try {
+                                if (typeof AdminData !== 'undefined') {
+                                    AdminData.users = AdminData.users.filter(u => u.id !== Number(id));
+                                }
+                                showNotification('User deleted successfully!', 'success');
+                                loadUsers();
+                                renderTable();
+                            } catch (error) {
+                                showNotification('Failed to delete user', 'error');
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (searchInput) searchInput.addEventListener('input', renderTable);
+            if (roleFilter) roleFilter.addEventListener('change', renderTable);
+
+            loadUsers();
+            renderTable();
+        });
+    </script>
 </body>
 </html>

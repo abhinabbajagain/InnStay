@@ -1,4 +1,14 @@
+/*
+ * ============================================
+ * InnStay - Admin Navigation & Auth Module
+ * Description: Handle admin sidebar, header, and authentication
+ * ============================================
+ */
+
 document.addEventListener('DOMContentLoaded', function () {
+    // Check authentication
+    checkAdminAuth();
+
     const sidebar = document.getElementById('adminSidebar');
     const header = document.getElementById('adminHeader');
     const page = document.body.getAttribute('data-page');
@@ -25,6 +35,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (header) {
+        const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{"name":"Admin"}');
+        const userName = adminUser?.name || 'Admin';
+        const userInitial = (userName || 'A').charAt(0).toUpperCase();
+
         header.innerHTML = `
             <header class="admin-header">
                 <div class="admin-header-left">
@@ -38,41 +52,104 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="admin-header-right">
                     <div class="admin-user">
-                        <div class="admin-avatar">A</div>
-                        <span>Admin</span>
+                        <div class="admin-avatar">${userInitial}</div>
+                        <span>${userName}</span>
                     </div>
                     <button class="logout-btn" type="button">Logout</button>
                 </div>
             </header>
         `;
-    }
 
-    const adminUser = typeof Utils !== 'undefined' ? Utils.getFromStorage('adminUser') : null;
-    if (adminUser) {
-        const nameLabel = document.querySelector('.admin-user span');
-        const avatar = document.querySelector('.admin-avatar');
-        if (nameLabel) {
-            nameLabel.textContent = adminUser.name || 'Admin';
+        // Setup sidebar toggle
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const aside = document.querySelector('.admin-sidebar');
+        if (toggleBtn && aside) {
+            toggleBtn.addEventListener('click', function () {
+                aside.classList.toggle('show');
+            });
         }
-        if (avatar) {
-            avatar.textContent = (adminUser.name || 'A').charAt(0).toUpperCase();
+
+        // Setup logout
+        const logoutBtn = document.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function () {
+                localStorage.removeItem('adminUser');
+                localStorage.removeItem('authToken');
+                window.location.href = 'login.html';
+            });
         }
-    }
-
-    const toggleBtn = document.getElementById('sidebarToggle');
-    const aside = document.querySelector('.admin-sidebar');
-
-    if (toggleBtn && aside) {
-        toggleBtn.addEventListener('click', function () {
-            aside.classList.toggle('show');
-        });
-    }
-
-    const logoutBtn = document.querySelector('.logout-btn');
-    if (logoutBtn && typeof Utils !== 'undefined') {
-        logoutBtn.addEventListener('click', function () {
-            Utils.removeFromStorage('adminUser');
-            window.location.href = 'login.html';
-        });
     }
 });
+
+function checkAdminAuth() {
+    const authToken = localStorage.getItem('authToken');
+    const adminUser = localStorage.getItem('adminUser');
+    
+    // Allow access if authenticated OR on login page
+    const isLoginPage = window.location.pathname.includes('login.html');
+    
+    if (!authToken || !adminUser) {
+        if (!isLoginPage) {
+            window.location.href = 'login.html';
+        }
+    }
+}
+
+// Helper to get admin data
+function getAdminData() {
+    return typeof AdminData !== 'undefined' ? AdminData : null;
+}
+
+// Helper to render table rows
+function renderTableRows(data, columns, actions = null) {
+    return data.map((item, index) => {
+        const cells = columns.map(col => {
+            const value = item[col.key];
+            if (col.render) {
+                return `<td>${col.render(value, item)}</td>`;
+            }
+            if (col.type === 'badge') {
+                const badgeClass = `badge-${getStatusClass(value)}`;
+                return `<td><span class="badge ${badgeClass}">${value}</span></td>`;
+            }
+            return `<td>${value || '-'}</td>`;
+        }).join('');
+
+        const actionButtons = actions ? `<td>${actions(item, index)}</td>` : '';
+        return `<tr>${cells}${actionButtons}</tr>`;
+    }).join('');
+}
+
+function getStatusClass(status) {
+    const st = status.toLowerCase();
+    if (st.includes('confirmed') || st.includes('active')) return 'success';
+    if (st.includes('pending')) return 'warning';
+    if (st.includes('cancelled')) return 'danger';
+    return 'info';
+}
+
+// Show/hide modals
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Close modal on backdrop click
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('admin-modal')) {
+        e.target.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+});
+

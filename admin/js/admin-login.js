@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = document.getElementById('adminTogglePassword');
     const passwordInput = document.getElementById('adminPassword');
     const closeBtn = document.querySelector('[data-close-auth]');
-    const apiBaseUrl = 'http://localhost:5000/api';
 
     if (closeBtn) {
         closeBtn.addEventListener('click', function () {
@@ -21,11 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    if (!form || typeof Utils === 'undefined') {
+    if (!form) {
         return;
     }
 
-    const remembered = Utils.getFromStorage('adminRemember');
+    // Load remembered email
+    const remembered = localStorage.getItem('adminRemember');
     if (remembered) {
         document.getElementById('adminEmail').value = remembered;
         document.getElementById('adminRemember').checked = true;
@@ -39,8 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const remember = document.getElementById('adminRemember').checked;
 
         if (!email || !password) {
-            errorDiv.textContent = 'Please enter your admin email and password.';
-            errorDiv.style.display = 'block';
+            showError('Please enter your admin email and password.');
             return;
         }
 
@@ -52,42 +51,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            const response = await fetch(`${apiBaseUrl}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
+            let result = null;
 
-            const data = await response.json().catch(() => ({}));
+            // Try backend first
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                    timeout: 3000
+                });
 
-            if (!response.ok) {
-                errorDiv.textContent = data.message || 'Unable to sign in. Please check your credentials.';
-                errorDiv.style.display = 'block';
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.user && data.user.role === 'admin') {
+                        result = data;
+                    }
+                }
+            } catch (e) {
+                // Backend unavailable, use demo mode
+            }
+
+            // Fallback to demo authentication
+            if (!result && typeof AdminData !== 'undefined') {
+                result = AdminData.authenticate(email, password);
+                if (result.success) {
+                    result = {
+                        token: result.token,
+                        user: result.user
+                    };
+                } else {
+                    result = null;
+                }
+            }
+
+            if (!result || !result.user || result.user.role !== 'admin') {
+                showError('Invalid admin credentials. Try admin@innstay.com / admin123');
                 return;
             }
 
-            if (!data.user || data.user.role !== 'admin') {
-                errorDiv.textContent = 'Admin access required.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            localStorage.setItem('authToken', data.token);
-            Utils.saveToStorage('adminUser', data.user);
-            Utils.saveToStorage('currentUser', data.user);
+            // Store authentication
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('adminUser', JSON.stringify(result.user));
+            localStorage.setItem('currentUser', JSON.stringify(result.user));
 
             if (remember) {
-                Utils.saveToStorage('adminRemember', email);
+                localStorage.setItem('adminRemember', email);
             }
 
             errorDiv.style.display = 'none';
             window.location.href = 'index.html';
         } catch (error) {
             console.error('Admin login failed:', error);
-            errorDiv.textContent = 'Unable to sign in right now. Please try again.';
-            errorDiv.style.display = 'block';
+            showError('Unable to sign in right now. Please try again.');
         } finally {
             if (submitBtn) {
                 submitBtn.innerHTML = originalText;
@@ -95,4 +111,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+
+    function showError(message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
 });
+

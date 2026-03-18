@@ -21,53 +21,186 @@
             <div class="form-grid">
                 <div class="setting-card">
                     <h2>General</h2>
-                    <div class="form-group">
-                        <label>Platform Name</label>
-                        <input type="text" value="InnStay">
-                    </div>
-                    <div class="form-group">
-                        <label>Support Email</label>
-                        <input type="email" value="support@innstay.com">
-                    </div>
+                    <form id="generalSettings">
+                        <div class="form-group">
+                            <label>Platform Name</label>
+                            <input type="text" name="platformName" value="InnStay">
+                        </div>
+                        <div class="form-group">
+                            <label>Support Email</label>
+                            <input type="email" name="supportEmail" value="support@innstay.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save General Settings</button>
+                    </form>
                 </div>
 
                 <div class="setting-card">
                     <h2>Notifications</h2>
-                    <div class="toggle-row">
-                        <span>Email alerts</span>
-                        <div class="switch"></div>
-                    </div>
-                    <div class="toggle-row">
-                        <span>SMS alerts</span>
-                        <div class="switch"></div>
-                    </div>
-                    <div class="toggle-row">
-                        <span>Weekly reports</span>
-                        <div class="switch"></div>
-                    </div>
+                    <form id="notificationSettings">
+                        <div class="toggle-row">
+                            <span>Email alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" name="emailAlerts" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span>SMS alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" name="smsAlerts">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span>Weekly reports</span>
+                            <label class="switch">
+                                <input type="checkbox" name="weeklyReports" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Notification Settings</button>
+                    </form>
                 </div>
 
                 <div class="setting-card">
                     <h2>Security</h2>
-                    <div class="form-group">
-                        <label>Reset admin password</label>
-                        <input type="password" placeholder="New password">
+                    <form id="securitySettings">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" name="currentPassword" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" name="newPassword" placeholder="Enter new password" minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" name="confirmPassword" placeholder="Confirm new password">
+                        </div>
+                        <div class="form-group">
+                            <label>Two-factor Authentication</label>
+                            <select name="twoFA">
+                                <option value="enabled">Enabled</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Security Settings</button>
+                    </form>
+                </div>
+
+                <div class="setting-card">
+                    <h2>System Information</h2>
+                    <div style="display: grid; row-gap: 10px;">
+                        <div>
+                            <strong>Version:</strong> 1.0.0
+                        </div>
+                        <div>
+                            <strong>Last Updated:</strong> <span id="lastUpdated">Loading...</span>
+                        </div>
+                        <div>
+                            <strong>Database Status:</strong> <span style="color: #22C55E;">✓ Connected (Demo Mode)</span>
+                        </div>
+                        <div>
+                            <strong>API Status:</strong> <span style="color: #EF4444;">✗ Not Connected (Demo Mode)</span>
+                        </div>
+                        <button class="btn btn-outline" id="clearCacheBtn">Clear Cache</button>
                     </div>
-                    <div class="form-group">
-                        <label>Two-factor authentication</label>
-                        <select>
-                            <option>Enabled</option>
-                            <option>Disabled</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary">Save Settings</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-data.js"></script>
     <script src="js/admin-auth.js"></script>
     <script src="js/admin-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ensureAuth();
+
+            // Set last updated
+            document.getElementById('lastUpdated').textContent = formatDate(new Date());
+
+            // General settings form
+            const generalForm = document.getElementById('generalSettings');
+            if (generalForm) {
+                generalForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const data = getFormData(generalForm);
+                    localStorage.setItem('generalSettings', JSON.stringify(data));
+                    showNotification('General settings saved!', 'success');
+                });
+            }
+
+            // Notification settings form
+            const notificationForm = document.getElementById('notificationSettings');
+            if (notificationForm) {
+                notificationForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(notificationForm);
+                    const data = {
+                        emailAlerts: formData.get('emailAlerts') === 'on',
+                        smsAlerts: formData.get('smsAlerts') === 'on',
+                        weeklyReports: formData.get('weeklyReports') === 'on'
+                    };
+                    localStorage.setItem('notificationSettings', JSON.stringify(data));
+                    showNotification('Notification settings saved!', 'success');
+                });
+            }
+
+            // Security settings form
+            const securityForm = document.getElementById('securitySettings');
+            if (securityForm) {
+                securityForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newPassword = securityForm.newPassword.value;
+                    const confirmPassword = securityForm.confirmPassword.value;
+
+                    if (!newPassword && !confirmPassword) {
+                        showNotification('Please enter a new password', 'warning');
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        showNotification('Passwords do not match!', 'error');
+                        return;
+                    }
+
+                    if (newPassword.length < 6) {
+                        showNotification('Password must be at least 6 characters', 'error');
+                        return;
+                    }
+
+                    localStorage.setItem('securitySettings', JSON.stringify({
+                        twoFA: securityForm.twoFA.value
+                    }));
+                    showNotification('Security settings updated!', 'success');
+                    securityForm.reset();
+                });
+            }
+
+            // Clear cache button
+            const clearCacheBtn = document.getElementById('clearCacheBtn');
+            if (clearCacheBtn) {
+                clearCacheBtn.addEventListener('click', () => {
+                    if (confirmDialog('This will clear all cached data. Continue?')) {
+                        localStorage.clear();
+                        showNotification('Cache cleared. Please login again.', 'success');
+                        setTimeout(() => window.location.href = 'login.html', 1500);
+                    }
+                });
+            }
+
+            // Load saved settings
+            const generalSettings = localStorage.getItem('generalSettings');
+            if (generalSettings) {
+                const data = JSON.parse(generalSettings);
+                if (generalForm) {
+                    generalForm.platformName.value = data.platformName || 'InnStay';
+                    generalForm.supportEmail.value = data.supportEmail || 'support@innstay.com';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

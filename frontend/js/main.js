@@ -14,11 +14,31 @@ const InnStay = {
      */
     init() {
         console.log('InnStay initialized');
-        this.setupEventListeners();
-        this.setupScrollListener();
-        this.updateAuthUI();
-        this.loadPopularHotels();
-        this.setupMinimumDates();
+        
+        // Hide loading screen immediately
+        this.hideLoadingScreen();
+        
+        try {
+            this.setupEventListeners();
+            this.setupScrollListener();
+            this.updateAuthUI();
+            this.loadPopularHotels();
+            this.setupMinimumDates();
+            this.setupQuickSelectButtons();
+            this.setupNavPillUpdate();
+            this.setupPropertyCardHoverEffects();
+        } catch (e) {
+            console.error('Error during initialization:', e);
+        }
+    },
+
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        console.log('hideLoadingScreen called, loadingScreen:', loadingScreen);
+        if (loadingScreen) {
+            console.log('Adding hidden class to loading screen');
+            loadingScreen.classList.add('hidden');
+        }
     },
 
     /**
@@ -73,16 +93,6 @@ const InnStay = {
             });
         }
 
-        // Guest menu button
-        const guestMenuBtn = document.getElementById('guestMenuBtn');
-        const guestMenuDropdown = document.getElementById('guestMenuDropdown');
-        if (guestMenuBtn && guestMenuDropdown) {
-            guestMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                guestMenuDropdown.classList.toggle('show');
-            });
-        }
-
         // Menu button
         if (menuBtn) {
             menuBtn.addEventListener('click', (e) => {
@@ -97,7 +107,6 @@ const InnStay = {
             if (!e.target.closest('.user-nav')) {
                 if (menuDropdown) menuDropdown.classList.remove('show');
                 if (menuBtn) menuBtn.classList.remove('open');
-                if (guestMenuDropdown) guestMenuDropdown.classList.remove('show');
             }
         });
 
@@ -734,6 +743,26 @@ const InnStay = {
         
         guestField.setAttribute('data-guests', guestText);
         document.getElementById('mapGuests').textContent = guestText;
+        
+        // Update nav pill
+        const nspGuests = document.getElementById('nspGuests');
+        if (nspGuests) nspGuests.textContent = guestText;
+    },
+
+    /**
+     * Attach logout listener
+     */
+    attachLogoutListener() {
+        const logoutBtn = document.querySelector('[data-auth="logout"]');
+        if (logoutBtn && !logoutBtn.hasListener) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'pages/login.html';
+            });
+            logoutBtn.hasListener = true;
+        }
     },
 
     /**
@@ -842,6 +871,22 @@ const InnStay = {
             }
         } catch (error) {
             console.warn('Failed to load hotels from database:', error);
+        }
+    },
+
+    /**
+     * Attach logout listener
+     */
+    attachLogoutListener() {
+        const logoutBtn = document.querySelector('[data-auth="logout"]');
+        if (logoutBtn && !logoutBtn.hasListener) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'pages/login.html';
+            });
+            logoutBtn.hasListener = true;
         }
     },
 
@@ -1377,6 +1422,18 @@ const InnStay = {
     },
 
     /**
+     * Hide the loading screen
+     */
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+            // Remove from DOM after fade out
+            setTimeout(() => loadingScreen.remove(), 500);
+        }
+    },
+
+    /**
      * Show alert message
      */
     showAlert(message, type = 'info') {
@@ -1390,4 +1447,9 @@ const InnStay = {
 };
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => InnStay.init());
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => InnStay.init());
+} else {
+    InnStay.init();
+}

@@ -19,42 +19,118 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Search reviews by hotel or guest">
-                <select>
-                    <option>Rating: All</option>
-                    <option>5 Stars</option>
-                    <option>4 Stars</option>
-                    <option>3 Stars</option>
-                    <option>2 Stars</option>
-                    <option>1 Star</option>
+                <input type="text" id="reviewSearch" placeholder="Search reviews by hotel or guest">
+                <select id="ratingFilter">
+                    <option value="All">Rating: All</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
                 </select>
             </div>
 
-            <div class="review-list">
-                <div class="review-item">
-                    <h4>Harbor View Suites</h4>
-                    <p>"Loved the view and the staff was very helpful."
-                    </p>
-                    <div class="badge badge-success">5 Stars</div>
-                </div>
-                <div class="review-item">
-                    <h4>Skyline Loft</h4>
-                    <p>"Clean and modern, but the check-in was delayed."
-                    </p>
-                    <div class="badge badge-warning">4 Stars</div>
-                </div>
-                <div class="review-item">
-                    <h4>Garden Retreat</h4>
-                    <p>"The location was great, but the wifi was spotty."
-                    </p>
-                    <div class="badge badge-info">3 Stars</div>
-                </div>
-            </div>
+            <div class="review-list" id="reviewList"></div>
         </main>
     </div>
 
     <script src="../frontend/js/utils.js"></script>
+    <script src="js/admin-data.js"></script>
     <script src="js/admin-auth.js"></script>
     <script src="js/admin-nav.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ensureAuth();
+
+            const reviewList = document.getElementById('reviewList');
+            const searchInput = document.getElementById('reviewSearch');
+            const ratingFilter = document.getElementById('ratingFilter');
+
+            let state = { reviews: [], hotels: [] };
+
+            function loadData() {
+                if (typeof AdminData !== 'undefined') {
+                    state.reviews = deepClone(AdminData.reviews || []);
+                    state.hotels = deepClone(AdminData.hotels || []);
+                }
+            }
+
+            function getFilteredReviews() {
+                const query = (searchInput?.value || '').toLowerCase().trim();
+                const rating = ratingFilter?.value || 'All';
+
+                return state.reviews.filter(review => {
+                    const hotel = state.hotels.find(h => h.id === review.hotelId);
+                    const hotelName = hotel?.title || 'Unknown';
+                    
+                    const matchesQuery = !query ||
+                        hotelName.toLowerCase().includes(query) ||
+                        review.guestName.toLowerCase().includes(query) ||
+                        review.comment.toLowerCase().includes(query);
+                    
+                    const matchesRating = rating === 'All' || review.rating === Number(rating);
+                    return matchesQuery && matchesRating;
+                });
+            }
+
+            function renderReviews() {
+                if (!reviewList) return;
+
+                const reviews = getFilteredReviews();
+                reviewList.innerHTML = reviews.map(review => {
+                    const hotel = state.hotels.find(h => h.id === review.hotelId);
+                    const stars = getStarRating(review.rating);
+                    const badgeClass = 
+                        review.rating >= 4 ? 'badge-success' :
+                        review.rating === 3 ? 'badge-warning' :
+                        'badge-danger';
+                    
+                    return `
+                        <div class="review-item">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h4>${hotel?.title || 'Unknown Hotel'}</h4>
+                                    <p style="font-size: 0.85em; color: #717171; margin: 5px 0;">
+                                        <strong>—${review.guestName}</strong> • ${formatDate(review.date)}
+                                    </p>
+                                    <p style="margin-top: 10px;">"${review.comment}"</p>
+                                </div>
+                                <div class="badge ${badgeClass}">${review.rating} ⭐</div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                <button class="btn btn-sm btn-outline" data-action="approve" data-id="${review.id}">Approve</button>
+                                <button class="btn btn-sm btn-danger" data-action="remove" data-id="${review.id}">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Attach event listeners
+                reviewList.querySelectorAll('[data-action]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const action = e.target.getAttribute('data-action');
+                        const id = e.target.getAttribute('data-id');
+                        
+                        if (action === 'remove') {
+                            if (confirmDialog('Remove this review?')) {
+                                if (typeof AdminData !== 'undefined') {
+                                    AdminData.reviews = AdminData.reviews.filter(r => r.id !== Number(id));
+                                    showNotification('Review removed', 'success');
+                                    loadData();
+                                    renderReviews();
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+
+            if (searchInput) searchInput.addEventListener('input', renderReviews);
+            if (ratingFilter) ratingFilter.addEventListener('change', renderReviews);
+
+            loadData();
+            renderReviews();
+        });
+    </script>
 </body>
 </html>

@@ -15,46 +15,68 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/homepage-enhancements.css">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">
+                <i class="fas fa-home"></i>
+                <h1>innstay</h1>
+            </div>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading amazing stays...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Emergency loading screen timeout - ensure it disappears after 3 seconds max
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                console.log('Emergency: Forcing loading screen to hide');
+                loadingScreen.classList.add('hidden');
+            }
+        }, 3000);
+    </script>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-inner">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-home"></i> innstay
-            </a>
-
-            <!-- Center: compact search pill -->
-            <div class="nav-search-pill" id="navSearchPill">
-                <span class="nsp-seg" id="nspWhere">Anywhere</span>
-                <span class="nsp-sep"></span>
-                <span class="nsp-seg" id="nspWhen">Any week</span>
-                <span class="nsp-sep"></span>
-                <span class="nsp-seg nsp-last" id="nspGuests">Add guests</span>
-                <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
+            <!-- Left: Brand Logo -->
+            <div class="nav-left">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-home"></i> innstay
+                </a>
             </div>
 
-            <!-- Right side -->
-            <div class="navbar-right">
+            <!-- Center: Search Pill -->
+            <div class="nav-center">
+                <div class="nav-search-pill" id="navSearchPill">
+                    <span class="nsp-seg" id="nspWhere">Anywhere</span>
+                    <span class="nsp-sep"></span>
+                    <span class="nsp-seg" id="nspWhen">Any week</span>
+                    <span class="nsp-sep"></span>
+                    <span class="nsp-seg nsp-last" id="nspGuests">Add guests</span>
+                    <button class="nsp-btn" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <!-- Right: Auth & User Menu -->
+            <div class="nav-right">
                 <a href="pages/become-host.html" class="become-host-link">Become a Host</a>
                 <button class="btn-globe" type="button"><i class="fas fa-globe"></i></button>
 
                 <!-- Guest nav (logged out) -->
-                <div class="user-nav" data-auth="guestNav">
-                    <button class="btn-user-pill" id="guestMenuBtn" type="button">
-                        <i class="fas fa-bars"></i>
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="menu-dropdown" id="guestMenuDropdown">
-                        <a href="pages/register.html" class="menu-item menu-item-bold">Sign up</a>
-                        <a href="pages/login.html" class="menu-item">Log in</a>
-                        <div class="menu-separator"></div>
-                        <a href="pages/become-host.html" class="menu-item">Become a Host</a>
-                        <a href="pages/help-center.html" class="menu-item">Help</a>
-                    </div>
+                <div class="auth-buttons" data-auth="guestNav" style="display: flex !important; gap: 12px; align-items: center;">
+                    <a href="pages/login.html" class="btn-login" style="display: inline-flex !important; color: #222 !important;">Log in</a>
+                    <a href="pages/register.html" class="btn-signup" style="display: inline-flex !important; background: #FF5A5F !important; color: white !important;">Sign up</a>
                 </div>
 
-                <!-- User nav (logged in) -->
+                <!-- User menu (logged in) -->
                 <div class="user-nav" hidden data-auth="userNav">
                     <button class="btn-user-pill" id="menuBtn" type="button">
                         <i class="fas fa-bars"></i>
@@ -416,5 +438,6 @@
     <script src="js/utils.js"></script>
     <script src="js/hotel-store.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/homepage-features.js"></script>
 </body>
 </html>

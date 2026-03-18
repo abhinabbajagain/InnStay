@@ -13,15 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function initNav() {
     const menuBtn = document.getElementById('menuBtn');
     const menuDropdown = document.getElementById('menuDropdown');
-    const guestMenuBtn = document.getElementById('guestMenuBtn');
-    const guestMenuDropdown = document.getElementById('guestMenuDropdown');
-
-    if (guestMenuBtn && guestMenuDropdown) {
-        guestMenuBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            guestMenuDropdown.classList.toggle('show');
-        });
-    }
 
     if (menuBtn && menuDropdown) {
         menuBtn.addEventListener('click', function (e) {
@@ -35,7 +26,6 @@ function initNav() {
         if (!e.target.closest('.user-nav')) {
             if (menuDropdown) menuDropdown.classList.remove('show');
             if (menuBtn) menuBtn.classList.remove('open');
-            if (guestMenuDropdown) guestMenuDropdown.classList.remove('show');
         }
     });
 
